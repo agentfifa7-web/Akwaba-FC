@@ -54,7 +54,7 @@ export default async function EditMatchPage({ params }: { params: Promise<{ id: 
         <h2 className="mb-4 font-display text-xl font-bold uppercase text-foreground">Chronologie / Live Match Center</h2>
         <div className="mb-5 space-y-2">
           {match.events.map((event) => (
-            <div key={event.id} className="flex items-center gap-4 border border-border bg-card p-3">
+            <div key={event.id} className="flex items-center gap-4 card-elevated p-3">
               <span className="w-10 shrink-0 text-sm font-bold text-accent-foreground">{event.minute}&apos;</span>
               <span>{MATCH_EVENT_ICONS[event.type as MatchEventType]}</span>
               <span className="flex-1 text-sm">{event.player} {event.detail && <span className="text-muted-foreground">— {event.detail}</span>}</span>
@@ -92,7 +92,7 @@ export default async function EditMatchPage({ params }: { params: Promise<{ id: 
             <label className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Détail (optionnel)</label>
             <input name="detail" className="min-h-11 w-full border border-border bg-background px-3 text-sm" />
           </div>
-          <button type="submit" className="flex items-center gap-2 bg-primary px-5 py-3 text-[11px] font-bold uppercase tracking-widest text-primary-foreground">
+          <button type="submit" className="rounded-full flex items-center gap-2 bg-primary px-5 py-3 text-[11px] font-bold uppercase tracking-widest text-primary-foreground">
             <Plus className="h-4 w-4" /> Ajouter
           </button>
         </form>

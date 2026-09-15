@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { requireRole, hashPassword } from '@/lib/auth'
+import { avatar } from '@/lib/images'
 import {
   NEWS_CATEGORIES,
   VIDEO_CATEGORIES,
@@ -205,7 +206,7 @@ export async function createPlayerAction(_prev: ActionState, formData: FormData)
   await prisma.player.create({
     data: {
       ...rest,
-      photoUrl: photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(`${data.firstName} ${data.lastName}`)}&background=071A2F&color=D4AF37&size=512&bold=true`,
+      photoUrl: photoUrl || avatar(`${data.firstName} ${data.lastName}`),
       birthDate: new Date(data.birthDate),
       slug: `${slugify(`${data.firstName}-${data.lastName}`)}-${data.number}-${Date.now().toString(36)}`,
       teamId: team.id,
@@ -314,7 +315,7 @@ export async function createStaffAction(_prev: ActionState, formData: FormData):
       role: data.role,
       department: data.department,
       bio: data.bio,
-      photoUrl: data.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=071A2F&color=D4AF37&size=512&bold=true`,
+      photoUrl: data.photoUrl || avatar(data.name),
       slug: `${slugify(data.name)}-${Date.now().toString(36)}`,
       teamId: team?.id,
     },

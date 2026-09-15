@@ -16,9 +16,9 @@ export function GalleryGrid({ images }: { images: ImageItem[] }) {
             key={image.id}
             type="button"
             onClick={() => setActiveIndex(i)}
-            className="group block w-full overflow-hidden bg-secondary"
+            className="group block w-full overflow-hidden rounded-2xl bg-secondary shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
           >
-            <img src={image.url} alt={image.caption ?? ''} className="w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            <img src={image.url} alt={image.caption ?? ''} className="w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
           </button>
         ))}
       </div>
@@ -63,7 +63,7 @@ export function GalleryGrid({ images }: { images: ImageItem[] }) {
           <img
             src={images[activeIndex].url}
             alt={images[activeIndex].caption ?? ''}
-            className="max-h-[85vh] max-w-full object-contain"
+            className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />
         </div>

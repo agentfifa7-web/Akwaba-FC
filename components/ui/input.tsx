@@ -6,7 +6,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
     <input
       ref={ref}
       className={cn(
-        'min-h-12 w-full border border-border bg-background px-4 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-accent-foreground disabled:opacity-50',
+        'min-h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-accent-foreground focus:ring-4 focus:ring-accent-foreground/10 disabled:opacity-50',
         className,
       )}
       {...props}
@@ -20,7 +20,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTML
     <textarea
       ref={ref}
       className={cn(
-        'w-full border border-border bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-accent-foreground disabled:opacity-50',
+        'w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-accent-foreground focus:ring-4 focus:ring-accent-foreground/10 disabled:opacity-50',
         className,
       )}
       {...props}
@@ -34,7 +34,7 @@ export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttrib
     <select
       ref={ref}
       className={cn(
-        'min-h-12 w-full border border-border bg-background px-4 text-sm text-foreground outline-none focus:border-accent-foreground disabled:opacity-50',
+        'min-h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-colors focus:border-accent-foreground focus:ring-4 focus:ring-accent-foreground/10 disabled:opacity-50',
         className,
       )}
       {...props}

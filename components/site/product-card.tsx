@@ -15,11 +15,11 @@ export function ProductCard({ product }: { product: Product }) {
   const { add } = useCart()
 
   return (
-    <div className="group border border-border bg-card">
-      <div className="relative aspect-square overflow-hidden bg-secondary">
-        <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+    <div className="card-elevated card-elevated-hover group overflow-hidden rounded-3xl">
+      <div className="relative aspect-square overflow-hidden rounded-t-3xl bg-secondary">
+        <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
         {!product.inStock && (
-          <span className="absolute right-3 top-3 bg-primary px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white">Rupture</span>
+          <span className="absolute right-3 top-3 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white shadow-md">Rupture</span>
         )}
       </div>
       <div className="p-5">

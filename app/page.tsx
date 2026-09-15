@@ -47,13 +47,13 @@ export default async function HomePage() {
                 Une passion qui nous rassemble. Une ambition qui nous guide. Bienvenue dans la famille AKWABA FC.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
-                <Link href="/matches" className="bg-accent px-6 py-4 text-xs font-bold uppercase tracking-widest text-primary transition-transform hover:-translate-y-1">
+                <Link href="/matches" className="rounded-full bg-accent px-6 py-4 text-xs font-bold uppercase tracking-widest text-primary transition-transform hover:-translate-y-1">
                   Voir le prochain match
                 </Link>
-                <Link href="/tickets" className="flex items-center gap-2 border border-white/50 px-6 py-4 text-xs font-bold uppercase tracking-widest text-white hover:border-accent hover:text-accent">
+                <Link href="/tickets" className="rounded-full flex items-center gap-2 border border-white/50 px-6 py-4 text-xs font-bold uppercase tracking-widest text-white hover:border-accent hover:text-accent">
                   <TicketIcon className="h-3.5 w-3.5" /> Billetterie
                 </Link>
-                <Link href="/club-tv" className="flex items-center gap-2 border border-white/50 px-6 py-4 text-xs font-bold uppercase tracking-widest text-white hover:border-accent hover:text-accent">
+                <Link href="/club-tv" className="rounded-full flex items-center gap-2 border border-white/50 px-6 py-4 text-xs font-bold uppercase tracking-widest text-white hover:border-accent hover:text-accent">
                   <PlaySquare className="h-3.5 w-3.5" /> Club TV
                 </Link>
               </div>
@@ -61,7 +61,7 @@ export default async function HomePage() {
           </div>
           {nextMatch && (
             <Reveal delay={0.15} className="self-end lg:mb-3 lg:justify-self-end">
-              <div className="w-full max-w-sm border-t-2 border-accent bg-primary/80 p-6 backdrop-blur-sm sm:p-8">
+              <div className="glass-panel w-full max-w-sm rounded-[1.75rem] border-t-2 border-t-accent bg-primary/80 p-6 shadow-2xl sm:p-8">
                 <div className="mb-6 flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-[.22em] text-accent">
                     {nextMatch.status === 'LIVE' ? 'En ce moment' : 'Prochain match'}
@@ -140,20 +140,20 @@ export default async function HomePage() {
             </Link>
           </Reveal>
           {standingRow && (
-            <Reveal delay={0.1} className="grid w-full max-w-xl grid-cols-2 border border-white/20 sm:grid-cols-4">
-              <div className="p-5">
+            <Reveal delay={0.1} className="grid w-full max-w-xl grid-cols-2 overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[.03] backdrop-blur-sm sm:grid-cols-4">
+              <div className="p-5 transition-colors hover:bg-white/5">
                 <p className="text-[10px] uppercase tracking-widest text-white/50">Joués</p>
                 <p className="mt-2 font-display text-4xl font-bold"><Counter value={standingRow.played} /></p>
               </div>
-              <div className="border-l border-white/20 p-5">
+              <div className="border-l border-white/10 p-5 transition-colors hover:bg-white/5">
                 <p className="text-[10px] uppercase tracking-widest text-white/50">Victoires</p>
                 <p className="mt-2 font-display text-4xl font-bold text-accent"><Counter value={standingRow.won} /></p>
               </div>
-              <div className="border-l border-t border-white/20 p-5 sm:border-t-0">
+              <div className="border-l border-t border-white/10 p-5 transition-colors hover:bg-white/5 sm:border-t-0">
                 <p className="text-[10px] uppercase tracking-widest text-white/50">Buts</p>
                 <p className="mt-2 font-display text-4xl font-bold"><Counter value={standingRow.goalsFor} /></p>
               </div>
-              <div className="border-l border-t border-white/20 p-5 sm:border-t-0">
+              <div className="border-l border-t border-white/10 p-5 transition-colors hover:bg-white/5 sm:border-t-0">
                 <p className="text-[10px] uppercase tracking-widest text-white/50">Classement</p>
                 <p className="mt-2 font-display text-4xl font-bold text-accent">#{String(standingRow.position).padStart(2, '0')}</p>
               </div>
@@ -178,8 +178,8 @@ export default async function HomePage() {
           <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
             {liveVideo && (
               <Reveal>
-                <Link href={`/club-tv/${liveVideo.slug}`} className="group relative block min-h-[360px] overflow-hidden bg-primary">
-                  <img src={liveVideo.thumbnailUrl} alt="" className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-105" />
+                <Link href={`/club-tv/${liveVideo.slug}`} className="card-elevated card-elevated-hover group relative block min-h-[360px] overflow-hidden rounded-[1.75rem] bg-primary">
+                  <img src={liveVideo.thumbnailUrl} alt="" className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 ease-out group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary to-transparent" />
                   {liveVideo.isLive && (
                     <Badge tone="live" className="absolute right-6 top-6">
@@ -197,8 +197,8 @@ export default async function HomePage() {
             <div className="flex flex-col gap-5">
               {videos.map((video, i) => (
                 <Reveal key={video.slug} delay={i * 0.1}>
-                  <Link href={`/club-tv/${video.slug}`} className="flex flex-1 gap-5 bg-secondary p-4">
-                    <img src={video.thumbnailUrl} alt="" className="aspect-square w-32 object-cover sm:w-44" />
+                  <Link href={`/club-tv/${video.slug}`} className="card-elevated card-elevated-hover flex flex-1 gap-5 rounded-3xl bg-secondary p-4">
+                    <img src={video.thumbnailUrl} alt="" className="aspect-square w-32 rounded-2xl object-cover sm:w-44" />
                     <div className="py-2">
                       <p className="text-[10px] font-bold uppercase tracking-widest text-accent-foreground">{video.category}</p>
                       <h3 className="mt-3 font-display text-2xl font-bold uppercase text-primary">{video.title}</h3>

@@ -25,7 +25,7 @@ export default async function MediaPage() {
                 <Reveal>
                   <p className="mb-4 text-[11px] font-bold uppercase tracking-[.25em] text-muted-foreground">{PRESS_ITEM_TYPE_LABELS[group.type as PressItemType]}</p>
                 </Reveal>
-                <ul className="divide-y divide-border border border-border bg-card">
+                <ul className="divide-y divide-border card-elevated">
                   {group.list.map((item) => (
                     <li key={item.id} className="flex items-center gap-4 p-4">
                       <FileText className="h-5 w-5 shrink-0 text-accent-foreground" />
@@ -41,7 +41,7 @@ export default async function MediaPage() {
           </div>
 
           <div className="space-y-10">
-            <Reveal className="border border-border bg-card p-6">
+            <Reveal className="card-elevated p-6">
               <p className="mb-4 text-[11px] font-bold uppercase tracking-[.25em] text-muted-foreground">Contacts presse</p>
               <div className="space-y-4">
                 {contacts.map((contact) => (
@@ -55,7 +55,7 @@ export default async function MediaPage() {
               </div>
             </Reveal>
 
-            <Reveal className="border border-border bg-card p-6">
+            <Reveal className="card-elevated p-6">
               <p className="mb-4 text-[11px] font-bold uppercase tracking-[.25em] text-muted-foreground">Calendrier médias</p>
               <ul className="space-y-3">
                 {events.map((event) => (

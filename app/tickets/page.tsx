@@ -20,7 +20,7 @@ export default async function TicketsPage() {
       <section className="px-5 py-16 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-[1440px] space-y-12">
           {matches.map((match, mi) => (
-            <Reveal key={match.id} delay={mi * 0.05} className="border border-border bg-card">
+            <Reveal key={match.id} delay={mi * 0.05} className="card-elevated">
               <div className="flex flex-col justify-between gap-3 border-b border-border p-6 sm:flex-row sm:items-center">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-accent-foreground">{match.competition.name}</p>

@@ -17,7 +17,7 @@ export default async function AdminAcademyApplicationsPage() {
       <h1 className="mb-2 font-display text-3xl font-black uppercase tracking-tight sm:text-4xl">Candidatures Academy</h1>
       <p className="mb-8 text-sm text-muted-foreground">Consultez les candidatures « Devenir joueur » reçues via le site public.</p>
 
-      <div className="overflow-x-auto border border-border bg-card">
+      <div className="overflow-x-auto card-elevated">
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead>
             <tr className="border-b border-border bg-secondary text-[10px] font-bold uppercase tracking-widest text-muted-foreground">

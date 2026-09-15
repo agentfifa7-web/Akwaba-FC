@@ -38,7 +38,7 @@ export default async function SupportersPage() {
           </Reveal>
           <div className="grid gap-5 sm:grid-cols-3">
             {groups.map((group, i) => (
-              <Reveal key={group.id} delay={i * 0.08} className="border border-border bg-card p-6">
+              <Reveal key={group.id} delay={i * 0.08} className="card-elevated p-6">
                 <img src={group.logoUrl ?? ''} alt="" className="h-14 w-14 rounded-full object-cover" />
                 <h3 className="mt-4 font-display text-xl font-bold uppercase">{group.name}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{group.description}</p>

@@ -21,7 +21,7 @@ export default async function AdminTicketsPage() {
         <h1 className="mb-2 font-display text-3xl font-black uppercase tracking-tight sm:text-4xl">Billetterie</h1>
         <p className="mb-8 text-sm text-muted-foreground">Créez les catégories de billets pour chaque match et suivez les réservations.</p>
 
-        <div className="overflow-x-auto border border-border bg-card">
+        <div className="overflow-x-auto card-elevated">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
               <tr className="border-b border-border bg-secondary text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
@@ -80,7 +80,7 @@ export default async function AdminTicketsPage() {
             <label className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Capacité</label>
             <input name="capacity" type="number" min={1} required className="min-h-11 w-32 border border-border bg-background px-3 text-sm" />
           </div>
-          <button type="submit" className="flex items-center gap-2 bg-primary px-5 py-3 text-[11px] font-bold uppercase tracking-widest text-primary-foreground">
+          <button type="submit" className="rounded-full flex items-center gap-2 bg-primary px-5 py-3 text-[11px] font-bold uppercase tracking-widest text-primary-foreground">
             <Plus className="h-4 w-4" /> Ajouter
           </button>
         </form>
@@ -88,7 +88,7 @@ export default async function AdminTicketsPage() {
 
       <div>
         <h2 className="mb-4 font-display text-xl font-bold uppercase text-foreground">Réservations récentes</h2>
-        <div className="overflow-x-auto border border-border bg-card">
+        <div className="overflow-x-auto card-elevated">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
               <tr className="border-b border-border bg-secondary text-[10px] font-bold uppercase tracking-widest text-muted-foreground">

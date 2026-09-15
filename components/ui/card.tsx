@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('border border-border bg-card text-card-foreground', className)} {...props} />
+  return <div className={cn('card-elevated rounded-3xl text-card-foreground', className)} {...props} />
 }
 
 export function StatBlock({ label, value, tone }: { label: string; value: React.ReactNode; tone?: 'accent' }) {

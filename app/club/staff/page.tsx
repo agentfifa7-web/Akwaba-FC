@@ -30,7 +30,7 @@ export default async function StaffPage() {
                 </h2>
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                   {group.members.map((member, i) => (
-                    <Reveal key={member.id} delay={i * 0.05} className="border border-border bg-card p-5 text-center">
+                    <Reveal key={member.id} delay={i * 0.05} className="card-elevated p-5 text-center">
                       <img src={member.photoUrl ?? ''} alt={member.name} className="mx-auto aspect-square w-20 rounded-full object-cover" />
                       <p className="mt-3 text-sm font-bold">{member.name}</p>
                       <p className="text-[11px] uppercase tracking-widest text-muted-foreground">{member.role}</p>

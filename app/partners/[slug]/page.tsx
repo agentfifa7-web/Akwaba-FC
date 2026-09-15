@@ -27,7 +27,7 @@ export default async function PartnerDetailPage({ params }: { params: Promise<{ 
             <h1 className="mt-3 font-display text-4xl font-black uppercase sm:text-5xl">{partner.name}</h1>
             {partner.description && <p className="mt-6 text-sm leading-6 text-white/70">{partner.description}</p>}
             {partner.websiteUrl && (
-              <a href={partner.websiteUrl} target="_blank" rel="noreferrer" className="mt-8 inline-block bg-accent px-6 py-3.5 text-[11px] font-bold uppercase tracking-widest text-primary">
+              <a href={partner.websiteUrl} target="_blank" rel="noreferrer" className="rounded-full mt-8 inline-block bg-accent px-6 py-3.5 text-[11px] font-bold uppercase tracking-widest text-primary">
                 Visiter le site
               </a>
             )}

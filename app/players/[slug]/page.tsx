@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { SiteChrome } from '@/components/site/site-chrome'
+import { PlayerPortrait } from '@/components/site/player-portrait'
 import { Reveal, Counter } from '@/components/ui/motion'
 import { getPlayerBySlug } from '@/lib/data'
 import { POSITION_LABELS, type Position } from '@/lib/constants'
@@ -31,7 +32,13 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
   return (
     <SiteChrome transparent>
       <section className="relative flex min-h-[560px] items-end bg-primary pt-32 text-white sm:min-h-[680px]">
-        <img src={player.photoUrl ?? ''} alt="" className="absolute inset-0 h-full w-full object-cover object-top opacity-60" />
+        <PlayerPortrait
+          photoUrl={player.photoUrl}
+          seed={player.slug}
+          number={player.number}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-top opacity-60"
+        />
         <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(5,8,13,.97)_10%,rgba(5,8,13,.4)_100%)]" />
         <div className="relative mx-auto w-full max-w-[1440px] px-5 pb-14 sm:px-8 lg:px-12">
           <Reveal>
@@ -52,7 +59,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
       <section className="px-5 py-16 sm:px-8 lg:px-12">
         <div className="mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[1fr_1.4fr]">
           <div className="space-y-6">
-            <Reveal className="border border-border bg-card p-6">
+            <Reveal className="card-elevated p-6">
               <dl className="space-y-4 text-sm">
                 <div className="flex justify-between border-b border-border pb-3">
                   <dt className="text-muted-foreground">Âge</dt>
@@ -94,7 +101,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
               </Reveal>
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                 {stats.map((stat, i) => (
-                  <Reveal key={stat.label} delay={i * 0.05} className="border border-border bg-card p-5">
+                  <Reveal key={stat.label} delay={i * 0.05} className="card-elevated p-5">
                     <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
                     <p className="mt-2 font-display text-3xl font-black text-accent-foreground">
                       <Counter value={stat.value} />

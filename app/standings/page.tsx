@@ -33,7 +33,7 @@ export default async function StandingsPage({ searchParams }: { searchParams: Pr
           </div>
 
           {groups.map((group) => (
-            <Reveal key={group.competition.id} className="mb-12 overflow-x-auto border border-border bg-card">
+            <Reveal key={group.competition.id} className="mb-12 overflow-x-auto card-elevated">
               <p className="border-b border-border px-5 py-4 text-sm font-bold uppercase tracking-widest text-primary">{group.competition.name} — {group.competition.season}</p>
               <table className="w-full min-w-[640px] text-left text-sm">
                 <thead>

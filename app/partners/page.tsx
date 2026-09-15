@@ -28,7 +28,7 @@ export default async function PartnersPage() {
                   <Reveal key={partner.slug} delay={i * 0.06}>
                     <Link
                       href={`/partners/${partner.slug}`}
-                      className="group flex h-full flex-col items-center justify-center gap-4 border border-border bg-card p-8 text-center transition-all hover:border-accent-foreground hover:shadow-lg"
+                      className="card-elevated card-elevated-hover group flex h-full flex-col items-center justify-center gap-4 p-8 text-center"
                     >
                       <img src={partner.logoUrl} alt={partner.name} className="h-16 w-16 rounded-full object-cover grayscale transition-all group-hover:grayscale-0" />
                       <p className="font-display text-lg font-bold uppercase">{partner.name}</p>

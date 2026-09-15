@@ -36,7 +36,7 @@ export default async function AdminMatchesPage() {
 
       <div>
         <h2 className="mb-4 font-display text-xl font-bold uppercase text-foreground">Compétitions</h2>
-        <div className="overflow-x-auto border border-border bg-card">
+        <div className="overflow-x-auto card-elevated">
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-border bg-secondary text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
@@ -69,7 +69,7 @@ export default async function AdminMatchesPage() {
             <label className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Saison</label>
             <input name="season" required className="min-h-11 border border-border bg-background px-3 text-sm" placeholder="2026/2027" />
           </div>
-          <button type="submit" className="flex items-center gap-2 bg-primary px-5 py-3 text-[11px] font-bold uppercase tracking-widest text-primary-foreground">
+          <button type="submit" className="rounded-full flex items-center gap-2 bg-primary px-5 py-3 text-[11px] font-bold uppercase tracking-widest text-primary-foreground">
             <Plus className="h-4 w-4" /> Ajouter
           </button>
         </form>

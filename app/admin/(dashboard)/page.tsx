@@ -60,7 +60,7 @@ export default async function AdminDashboardPage({
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="border border-border bg-card p-6">
+        <div className="card-elevated p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-display text-xl font-bold uppercase">Derniers contenus publiés</h2>
             <Link href="/admin/news" className="text-[10px] font-bold uppercase tracking-widest text-accent-foreground">
@@ -80,7 +80,7 @@ export default async function AdminDashboardPage({
           </ul>
         </div>
 
-        <div className="border border-border bg-card p-6">
+        <div className="card-elevated p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-display text-xl font-bold uppercase">Candidatures Academy récentes</h2>
             <Link href="/admin/academy-applications" className="text-[10px] font-bold uppercase tracking-widest text-accent-foreground">

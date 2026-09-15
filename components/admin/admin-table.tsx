@@ -39,14 +39,14 @@ export function AdminTable<T extends { id: string }>({
         </div>
         {newHref && (
           <Link href={newHref}>
-            <span className="inline-flex items-center gap-2 bg-primary px-5 py-3 text-[11px] font-bold uppercase tracking-widest text-primary-foreground hover:bg-primary/90">
+            <span className="rounded-full inline-flex items-center gap-2 bg-primary px-5 py-3 text-[11px] font-bold uppercase tracking-widest text-primary-foreground hover:bg-primary/90">
               <Plus className="h-4 w-4" /> {newLabel}
             </span>
           </Link>
         )}
       </div>
 
-      <div className="overflow-x-auto border border-border bg-card">
+      <div className="overflow-x-auto card-elevated">
         <table className="w-full min-w-[640px] text-left text-sm">
           <thead>
             <tr className="border-b border-border bg-secondary text-[10px] font-bold uppercase tracking-widest text-muted-foreground">

@@ -61,13 +61,13 @@ export default async function MatchesPage({ searchParams }: { searchParams: Prom
               </div>
             </Reveal>
             <Reveal className="mt-8 flex flex-wrap justify-center gap-3 sm:justify-start">
-              <Link href={`/matches/${nextMatch.id}`} className="bg-accent px-6 py-3.5 text-[11px] font-bold uppercase tracking-widest text-primary">
+              <Link href={`/matches/${nextMatch.id}`} className="rounded-full bg-accent px-6 py-3.5 text-[11px] font-bold uppercase tracking-widest text-primary">
                 {nextMatch.status === 'LIVE' ? 'Suivre en direct' : 'Présentation'}
               </Link>
-              <Link href="/tickets" className="border border-white/40 px-6 py-3.5 text-[11px] font-bold uppercase tracking-widest text-white hover:border-accent hover:text-accent">
+              <Link href="/tickets" className="rounded-full border border-white/40 px-6 py-3.5 text-[11px] font-bold uppercase tracking-widest text-white hover:border-accent hover:text-accent">
                 Billetterie
               </Link>
-              <a href="#" className="border border-white/40 px-6 py-3.5 text-[11px] font-bold uppercase tracking-widest text-white hover:border-accent hover:text-accent">
+              <a href="#" className="rounded-full border border-white/40 px-6 py-3.5 text-[11px] font-bold uppercase tracking-widest text-white hover:border-accent hover:text-accent">
                 Itinéraire
               </a>
             </Reveal>

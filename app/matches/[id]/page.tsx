@@ -70,7 +70,7 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
             ) : (
               <ol className="space-y-4">
                 {match.events.map((event) => (
-                  <li key={event.id} className="flex items-center gap-4 border border-border bg-card p-4">
+                  <li key={event.id} className="flex items-center gap-4 card-elevated p-4">
                     <span className="w-12 shrink-0 font-display text-lg font-bold text-accent-foreground">{event.minute}&apos;</span>
                     <span className="text-lg">{MATCH_EVENT_ICONS[event.type as MatchEventType]}</span>
                     <div className="flex-1">
@@ -85,7 +85,7 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
           </div>
 
           <div className="space-y-6">
-            <Reveal className="border border-border bg-card p-6">
+            <Reveal className="card-elevated p-6">
               <p className="mb-4 text-[11px] font-bold uppercase tracking-[.25em] text-muted-foreground">Informations</p>
               <dl className="space-y-3 text-sm">
                 <div className="flex justify-between border-b border-border pb-2">
@@ -106,7 +106,7 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
               <Reveal className="border-t-2 border-accent bg-primary p-6 text-white">
                 <p className="mb-2 text-[11px] font-bold uppercase tracking-[.22em] text-accent">Billetterie</p>
                 <p className="text-sm text-white/70">Des places sont disponibles pour ce match.</p>
-                <Link href="/tickets" className="mt-5 block bg-accent px-5 py-3.5 text-center text-[11px] font-bold uppercase tracking-widest text-primary">
+                <Link href="/tickets" className="rounded-full mt-5 block bg-accent px-5 py-3.5 text-center text-[11px] font-bold uppercase tracking-widest text-primary">
                   Réserver mes billets
                 </Link>
               </Reveal>

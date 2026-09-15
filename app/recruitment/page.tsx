@@ -39,7 +39,7 @@ export default function RecruitmentPage() {
                 <p className="text-lg font-bold">{state.success}</p>
               </div>
             ) : (
-              <form action={formAction} className="space-y-5 border border-border bg-card p-7">
+              <form action={formAction} className="space-y-5 card-elevated p-7">
                 <div>
                   <Label htmlFor="category">Domaine</Label>
                   <Select id="category" name="category" required defaultValue="">

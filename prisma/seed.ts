@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+import { avatar, logoAvatar } from '../lib/images'
 
 const prisma = new PrismaClient()
 
@@ -35,10 +36,6 @@ const PHOTOS = {
 const photoPool = Object.values(PHOTOS)
 function poolImg(i: number, width = 1200) {
   return img(photoPool[i % photoPool.length], width)
-}
-function avatar(name: string) {
-  const bgs = ['071A2F', '0D2540', '10192A']
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${bgs[name.length % bgs.length]}&color=D4AF37&size=512&bold=true&font-size=0.38`
 }
 function slugify(s: string) {
   return s
@@ -586,7 +583,7 @@ async function main() {
         slug: slugify(p.name),
         name: p.name,
         category: p.category,
-        logoUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=F4F6F8&color=071A2F&size=256&bold=true&length=3`,
+        logoUrl: logoAvatar(p.name),
         description: `${p.name} accompagne AKWABA FC en tant que ${p.category === 'PRINCIPAL' ? 'partenaire principal' : p.category === 'OFFICIEL' ? 'partenaire officiel' : p.category === 'SPONSOR' ? 'sponsor' : 'partenaire institutionnel'}.`,
         websiteUrl: 'https://example.com',
         order: pi,

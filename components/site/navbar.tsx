@@ -122,15 +122,15 @@ export function Navbar({ transparent = false }: { transparent?: boolean }) {
                 {item.children && (
                   <div
                     className={cn(
-                      'absolute left-0 top-full min-w-[220px] border-t-2 border-accent bg-primary shadow-xl transition-all',
-                      openDropdown === item.label ? 'visible opacity-100' : 'invisible opacity-0',
+                      'glass-panel absolute left-0 top-[calc(100%-4px)] min-w-[240px] overflow-hidden rounded-2xl bg-primary/95 p-2 shadow-2xl transition-all duration-300',
+                      openDropdown === item.label ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1 opacity-0',
                     )}
                   >
                     {item.children.map((child) => (
                       <Link
                         key={child.href}
                         href={child.href}
-                        className="block border-b border-white/10 px-5 py-3 text-[11px] font-semibold uppercase tracking-widest text-white/80 last:border-b-0 hover:bg-white/5 hover:text-accent"
+                        className="block rounded-xl px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-white/80 transition-colors hover:bg-white/10 hover:text-accent"
                       >
                         {child.label}
                       </Link>
@@ -146,13 +146,13 @@ export function Navbar({ transparent = false }: { transparent?: boolean }) {
             <NotificationBell />
             <Link
               href="/tickets"
-              className="hidden items-center gap-2 bg-accent px-5 py-3 text-[11px] font-bold uppercase tracking-[0.15em] text-[#071a2f] transition-transform hover:-translate-y-0.5 sm:flex"
+              className="hidden items-center gap-2 rounded-full bg-accent px-5 py-3 text-[11px] font-bold uppercase tracking-[0.15em] text-[#071a2f] shadow-lg shadow-accent/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-accent/40 sm:flex"
             >
               <Ticket className="h-3.5 w-3.5" /> Billetterie
             </Link>
             <button
               onClick={() => setMenuOpen((v) => !v)}
-              className="flex h-11 w-11 items-center justify-center border border-white/30 lg:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 transition-colors hover:bg-white/10 lg:hidden"
               aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
               aria-expanded={menuOpen}
               aria-controls="menu-mobile"
@@ -166,7 +166,7 @@ export function Navbar({ transparent = false }: { transparent?: boolean }) {
       {menuOpen && (
         <nav
           id="menu-mobile"
-          className="max-h-[calc(100vh-72px)] overflow-y-auto border-t border-white/15 bg-primary px-6 py-5 lg:hidden"
+          className="max-h-[calc(100vh-72px)] overflow-y-auto rounded-b-[1.75rem] border-t border-white/15 bg-primary px-6 py-5 shadow-2xl lg:hidden"
           aria-label="Menu mobile"
         >
           {primaryNav.map((item) => (
@@ -185,7 +185,7 @@ export function Navbar({ transparent = false }: { transparent?: boolean }) {
               )}
             </div>
           ))}
-          <Link href="/tickets" className="mt-5 flex items-center justify-center gap-2 bg-accent px-5 py-4 text-xs font-bold uppercase tracking-widest text-[#071a2f]">
+          <Link href="/tickets" className="rounded-full mt-5 flex items-center justify-center gap-2 bg-accent px-5 py-4 text-xs font-bold uppercase tracking-widest text-[#071a2f]">
             <Ticket className="h-4 w-4" /> Billetterie
           </Link>
         </nav>

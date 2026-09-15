@@ -46,13 +46,14 @@ export function Dialog({
           onClick={onClose}
         >
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 16 }}
-            transition={{ duration: 0.22 }}
+            initial={{ opacity: 0, y: 16, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 16, scale: 0.97 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className={cn('w-full max-w-md border-t-2 border-accent bg-card p-7 text-card-foreground shadow-2xl', className)}
+            className={cn('relative w-full max-w-md overflow-hidden rounded-[1.75rem] bg-card p-7 text-card-foreground shadow-2xl', className)}
           >
+            <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-accent/40 via-accent to-accent/40" />
             <div className="flex items-start justify-between gap-5">
               <div>
                 {kicker && <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-accent-foreground">{kicker}</p>}
@@ -61,10 +62,10 @@ export function Dialog({
               <button
                 type="button"
                 onClick={onClose}
-                className="text-2xl leading-none text-muted-foreground hover:text-foreground"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 aria-label="Fermer"
               >
-                <X className="h-6 w-6" />
+                <X className="h-5 w-5" />
               </button>
             </div>
             <div className="mt-6">{children}</div>

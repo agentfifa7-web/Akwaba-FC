@@ -34,7 +34,7 @@ export default async function AdminShopPage() {
 
       <div>
         <h2 className="mb-4 font-display text-xl font-bold uppercase text-foreground">Commandes récentes</h2>
-        <div className="overflow-x-auto border border-border bg-card">
+        <div className="overflow-x-auto card-elevated">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
               <tr className="border-b border-border bg-secondary text-[10px] font-bold uppercase tracking-widest text-muted-foreground">

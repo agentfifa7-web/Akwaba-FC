@@ -74,7 +74,7 @@ export function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={s.label}
-                  className="flex h-9 w-9 items-center justify-center border border-white/15 text-white/60 transition-colors hover:border-accent hover:text-accent"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/60 transition-all hover:-translate-y-0.5 hover:border-accent hover:bg-accent/10 hover:text-accent"
                 >
                   <s.icon className="h-4 w-4" />
                 </a>

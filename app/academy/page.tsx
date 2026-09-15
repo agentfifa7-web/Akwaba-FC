@@ -43,7 +43,7 @@ export default async function AcademyPage() {
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {pillars.map((p, i) => (
-              <Reveal key={p.title} delay={i * 0.06} className="border border-border bg-card p-6">
+              <Reveal key={p.title} delay={i * 0.06} className="card-elevated p-6">
                 <p.icon className="h-6 w-6 text-accent-foreground" />
                 <h3 className="mt-4 font-display text-lg font-bold uppercase">{p.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{p.desc}</p>
@@ -71,7 +71,7 @@ export default async function AcademyPage() {
             </Reveal>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {educators.map((member) => (
-                <div key={member.id} className="border border-border bg-card p-5 text-center">
+                <div key={member.id} className="card-elevated p-5 text-center">
                   <img src={member.photoUrl ?? ''} alt={member.name} className="mx-auto aspect-square w-20 rounded-full object-cover" />
                   <p className="mt-3 text-sm font-bold">{member.name}</p>
                   <p className="text-[11px] uppercase tracking-widest text-muted-foreground">{member.role}</p>
@@ -85,7 +85,7 @@ export default async function AcademyPage() {
               <h3 className="font-display text-3xl font-black uppercase">Rejoindre l'Academy</h3>
               <p className="mt-2 max-w-md text-sm">Détection, recrutement, sessions d'essais — déposez la candidature de votre enfant dès aujourd'hui.</p>
             </div>
-            <Link href="/academy/devenir-joueur" className="shrink-0 bg-primary px-7 py-4 text-xs font-bold uppercase tracking-widest text-white hover:bg-primary/90">
+            <Link href="/academy/devenir-joueur" className="rounded-full shrink-0 bg-primary px-7 py-4 text-xs font-bold uppercase tracking-widest text-white hover:bg-primary/90">
               Devenir joueur →
             </Link>
           </Reveal>

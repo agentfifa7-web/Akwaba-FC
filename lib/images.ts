@@ -31,13 +31,43 @@ export function img(id: keyof typeof IDS, width = 1200, quality = 85) {
 export const HERO_IMAGES = ['teamPitch', 'clubIdentity', 'training', 'stadium', 'celebration'] as const
 export const GALLERY_POOL = Object.keys(IDS) as (keyof typeof IDS)[]
 
+// Dégradés de secours élégants (navy → bleu nuit plus clair, ponctués d'un
+// reflet bronze) pour les portraits sans photo — bien plus chic qu'un aplat.
+const PORTRAIT_GRADIENTS = [
+  ['0a1f3d', '17417a'],
+  ['0d2540', '1d3f70'],
+  ['10192a', '223d68'],
+  ['081b33', '2c4f8c'],
+  ['0e2038', '35507e'],
+]
+
 export function avatar(name: string, size = 512) {
-  const bg = ['071A2F', '0D2540', '10192A']
-  const color = 'D4AF37'
-  const seed = name.length % bg.length
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${bg[seed]}&color=${color}&size=${size}&bold=true&font-size=0.38`
+  const pair = PORTRAIT_GRADIENTS[name.length % PORTRAIT_GRADIENTS.length]
+  const params = new URLSearchParams({
+    seed: name,
+    size: String(size),
+    backgroundType: 'gradientLinear',
+    backgroundColor: pair.join(','),
+    backgroundRotation: '135',
+    radius: '0',
+    fontWeight: '700',
+    fontSize: '36',
+    textColor: 'd4af37',
+  })
+  return `https://api.dicebear.com/9.x/initials/svg?${params.toString()}`
 }
 
 export function logoAvatar(name: string, size = 256) {
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=F4F6F8&color=071A2F&size=${size}&bold=true&font-size=0.33&length=3`
+  const params = new URLSearchParams({
+    seed: name,
+    size: String(size),
+    backgroundType: 'gradientLinear',
+    backgroundColor: 'f4f6f8,e4e9ee',
+    backgroundRotation: '135',
+    radius: '0',
+    fontWeight: '700',
+    fontSize: '32',
+    textColor: '071a2f',
+  })
+  return `https://api.dicebear.com/9.x/initials/svg?${params.toString()}`
 }

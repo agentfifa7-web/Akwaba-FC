@@ -87,7 +87,7 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
           </Reveal>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {staff.map((member) => (
-              <div key={member.id} className="border border-border bg-card p-5 text-center">
+              <div key={member.id} className="card-elevated p-5 text-center">
                 <img src={member.photoUrl ?? ''} alt={member.name} className="mx-auto aspect-square w-20 rounded-full object-cover" />
                 <p className="mt-3 text-sm font-bold">{member.name}</p>
                 <p className="text-[11px] uppercase tracking-widest text-muted-foreground">{member.role}</p>

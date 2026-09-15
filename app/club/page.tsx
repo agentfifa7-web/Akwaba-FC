@@ -31,7 +31,7 @@ export default async function ClubPage() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {quickLinks.map((link, i) => (
                 <Reveal key={link.href} delay={i * 0.05}>
-                  <Link href={link.href} className="block h-full border border-border bg-card p-6 transition-colors hover:border-accent-foreground">
+                  <Link href={link.href} className="card-elevated card-elevated-hover block h-full p-6">
                     <h3 className="font-display text-xl font-bold uppercase text-foreground">{link.title}</h3>
                     <p className="mt-2 text-sm text-muted-foreground">{link.desc}</p>
                   </Link>

@@ -23,7 +23,7 @@ export function NewsletterForm({ className }: { className?: string }) {
         <button
           type="submit"
           disabled={pending}
-          className="min-h-14 bg-primary px-6 text-xs font-bold uppercase tracking-widest text-white transition-transform hover:-translate-y-1 disabled:opacity-60"
+          className="rounded-full min-h-14 bg-primary px-6 text-xs font-bold uppercase tracking-widest text-white transition-transform hover:-translate-y-1 disabled:opacity-60"
         >
           {pending ? 'Envoi…' : "S’inscrire"}
         </button>
