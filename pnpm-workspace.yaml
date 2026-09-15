@@ -1,0 +1,15 @@
+pmOnFail: ignore
+
+minimumReleaseAgeExclude:
+  - '@next/*'
+  - next
+  - framer-motion@13.3.0
+  - lucide-react@1.46.0
+  - motion-dom@13.3.0
+  - motion-utils@13.3.0
+
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  esbuild: true
+  prisma: true
