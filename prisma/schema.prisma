@@ -1,23 +1,21 @@
 // AKWABA FC — schéma de données de la plateforme
 //
-// Le provider est "sqlite" pour permettre au projet de tourner immédiatement
-// sans infrastructure externe (fichier prisma/dev.db). Pour la production,
-// il suffit de changer `provider` en "postgresql", de renseigner
-// DATABASE_URL avec une instance Postgres, puis de relancer
-// `npx prisma db push` (ou `migrate deploy`) : aucun modèle ci-dessous
-// n'utilise de fonctionnalité propre à SQLite.
+// Provider Postgres (compatible Vercel + Neon/Supabase/Vercel Postgres).
+// DATABASE_URL doit pointer vers une instance Postgres — voir .env.example
+// et README.md pour la configuration locale (Neon gratuit) et Vercel.
 //
-// SQLite ne supportant pas le type `enum` de Prisma, les valeurs "enum" sont
-// modélisées en String et validées côté application (voir lib/constants.ts
-// et lib/validation.ts) — ce qui reste 100% portable vers Postgres, où l'on
-// pourra ensuite promouvoir ces champs en vrais enums si souhaité.
+// Aucune valeur "enum" Prisma n'est utilisée ici : les catégories/rôles/
+// statuts sont modélisés en String et validés côté application (voir
+// lib/constants.ts) — un choix delibéré qui garde le schéma portable
+// (utile si un jour on change de fournisseur Postgres) et qui permettra de
+// les promouvoir en vrais enums Postgres plus tard si souhaité.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

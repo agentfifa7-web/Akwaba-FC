@@ -9,9 +9,9 @@ CMS interne (aucune information n'est codée en dur).
 ## Stack
 
 - **Next.js 16** (App Router, Turbopack) + **TypeScript** + **Tailwind CSS v4**
-- **Prisma** + **SQLite** en local (fichier `prisma/dev.db`, zéro configuration).
-  Pour la production, changer `provider` en `"postgresql"` dans
-  `prisma/schema.prisma`, renseigner `DATABASE_URL`, puis `pnpm db:push`.
+- **Prisma** + **Postgres** (Neon, Vercel Postgres, Supabase... — voir
+  `.env.example`). Aucune installation locale requise si vous utilisez une
+  base Postgres gratuite hébergée (Neon).
 - **Authentification maison** : sessions JWT signées (`jose`) + mots de passe
   hashés (`bcryptjs`), rôles (Super Admin, Administrateur, Éditeur,
   Responsable sportif, Responsable Academy, Responsable média) appliqués par
@@ -23,8 +23,8 @@ CMS interne (aucune information n'est codée en dur).
 
 ```bash
 pnpm install
-cp .env.example .env        # puis générer un SESSION_SECRET (voir le fichier)
-pnpm db:push                # crée le schéma SQLite
+cp .env.example .env        # renseigner DATABASE_URL (Postgres) + SESSION_SECRET
+pnpm db:push                # crée le schéma dans la base Postgres
 pnpm db:seed                # peuple des données de démonstration réalistes
 pnpm dev                    # http://localhost:3000
 ```
@@ -34,6 +34,44 @@ Identifiants admin créés par le seed (à changer en production) :
 Des comptes de démonstration existent aussi pour chaque rôle
 (`redaction@`, `sportif@`, `academy@`, `media@`, `direction@akwabafc.ci`,
 même mot de passe).
+
+## Déploiement sur Vercel
+
+Le schéma Postgres a été validé (push + seed complet exécutés avec succès
+contre une instance PostgreSQL 16 réelle) — ces étapes fonctionnent telles
+quelles.
+
+1. **Importer le projet** — sur [vercel.com/new](https://vercel.com/new),
+   choisir *Import Git Repository* et sélectionner
+   `agentfifa7-web/akwaba-fc`, branche `claude/plateforme-extraordinaire-nyj3a0`
+   (ou `main` après fusion). Vercel détecte Next.js automatiquement, aucune
+   configuration de build n'est nécessaire.
+2. **Ajouter la base de données** — pendant l'écran d'import, section
+   *Storage*, cliquer *Add* → **Neon** (Postgres serverless, offre gratuite)
+   → *Create*. Vercel crée la base et injecte automatiquement une variable
+   `DATABASE_URL` (ou `POSTGRES_URL` : dans ce cas, ajouter manuellement une
+   variable `DATABASE_URL` avec la même valeur, car c'est le nom que Prisma
+   attend ici).
+3. **Ajouter les variables d'environnement restantes** (Project Settings →
+   Environment Variables) :
+   - `SESSION_SECRET` — valeur aléatoire (`node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`)
+   - `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` — utilisés uniquement par le
+     seed local, pas nécessaires sur Vercel lui-même.
+4. **Déployer** — cliquer *Deploy*. Le build (`prisma generate && next build`)
+   ne touche pas encore aux tables : c'est volontaire, pour ne jamais risquer
+   d'écraser des données en production à chaque déploiement.
+5. **Créer les tables et les données de démo** (une seule fois, depuis votre
+   machine, avec l'URL Postgres copiée depuis Vercel) :
+   ```bash
+   DATABASE_URL="<url Postgres copiée depuis Vercel>" pnpm db:push
+   DATABASE_URL="<même url>" SEED_ADMIN_PASSWORD="VotreMotDePasse!" pnpm db:seed
+   ```
+6. Le site est en ligne sur l'URL fournie par Vercel ; `/admin/login` avec
+   l'e-mail/mot de passe choisis à l'étape précédente.
+
+Pour appliquer un futur changement de schéma en production, relancer la
+commande `db:push` de l'étape 5 (jamais automatiquement au build, pour
+garder le contrôle sur les migrations).
 
 ## Back-office
 
