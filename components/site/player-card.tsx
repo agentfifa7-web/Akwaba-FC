@@ -32,12 +32,12 @@ export function PlayerCard({ player }: { player: PlayerLike }) {
         <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/25 to-transparent" />
         <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-white/10 transition-all duration-500 group-hover:ring-accent/60" />
 
-        <div className="absolute left-3 top-3 flex h-11 w-11 items-center justify-center rounded-full border-2 border-accent bg-primary/90 shadow-lg backdrop-blur-sm transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:scale-105">
+        <div className="absolute left-3 top-3 flex h-11 w-11 items-center justify-center rounded-full border-2 border-accent bg-primary/90 shadow-lg backdrop-blur-sm group-hover:animate-wobble">
           <span className="font-display text-lg font-bold text-accent">{player.number}</span>
         </div>
 
         {player.captain && (
-          <span className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-accent shadow-lg">
+          <span className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-accent shadow-lg group-hover:animate-wobble">
             <Star className="h-4 w-4 fill-[#071a2f] text-[#071a2f]" />
           </span>
         )}

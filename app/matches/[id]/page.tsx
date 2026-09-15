@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { SiteChrome } from '@/components/site/site-chrome'
+import { ClubLogo } from '@/components/site/club-logo'
 import { Reveal } from '@/components/ui/motion'
-import { Badge } from '@/components/ui/badge'
+import { Badge, LiveDot } from '@/components/ui/badge'
 import { getMatchById } from '@/lib/data'
 import { formatDateFr, formatTime } from '@/lib/format'
 import { MATCH_EVENT_ICONS, MATCH_STATUS_LABELS, type MatchEventType, type MatchStatus } from '@/lib/constants'
@@ -38,16 +39,22 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
               {match.matchday && <span className="text-white/40">· {match.matchday}</span>}
               {isLive && (
                 <Badge tone="live">
-                  <span className="h-1.5 w-1.5 animate-pulse-live rounded-full bg-white" /> Live
+                  <LiveDot /> Live
                 </Badge>
               )}
             </div>
             <div className="grid items-center gap-6 sm:grid-cols-[1fr_auto_1fr]">
-              <h1 className="font-display text-3xl font-black uppercase leading-none sm:text-5xl">{home}</h1>
+              <div className="flex items-center gap-4">
+                <ClubLogo name={home} logoUrl={match.isHome ? undefined : match.opponentLogo} size={56} className="border-2" />
+                <h1 className="font-display text-3xl font-black uppercase leading-none sm:text-5xl">{home}</h1>
+              </div>
               <p className="font-display text-5xl font-black text-accent sm:text-6xl">
                 {isLive || isDone ? `${match.homeScore ?? 0} - ${match.awayScore ?? 0}` : 'VS'}
               </p>
-              <h1 className="font-display text-3xl font-black uppercase leading-none sm:text-right sm:text-5xl">{away}</h1>
+              <div className="flex items-center justify-start gap-4 sm:flex-row-reverse">
+                <ClubLogo name={away} logoUrl={match.isHome ? match.opponentLogo : undefined} size={56} className="border-2" />
+                <h1 className="font-display text-3xl font-black uppercase leading-none sm:text-right sm:text-5xl">{away}</h1>
+              </div>
             </div>
             <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-[11px] uppercase tracking-widest text-white/60">
               <span>{formatDateFr(match.date)}</span>

@@ -12,6 +12,7 @@ export default async function NewMatchPage() {
     { name: 'teamSlug', label: 'Équipe', type: 'select', required: true, options: TEAM_SLUGS.map((t) => ({ value: t, label: TEAM_LABELS[t as TeamSlug] })) },
     { name: 'competitionId', label: 'Compétition', type: 'select', required: true, options: competitions.map((c) => ({ value: c.id, label: `${c.name} (${c.season})` })) },
     { name: 'opponent', label: 'Adversaire', type: 'text', required: true },
+    { name: 'opponentLogo', label: 'Logo adversaire (URL, optionnel — généré automatiquement sinon)', type: 'text' },
     { name: 'isHome', label: 'Match à domicile', type: 'checkbox' },
     { name: 'date', label: 'Date et heure', type: 'datetime-local', required: true },
     { name: 'stadium', label: 'Stade', type: 'text', required: true },

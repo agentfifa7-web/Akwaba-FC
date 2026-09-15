@@ -3,9 +3,10 @@ import { Suspense } from 'react'
 import { SiteChrome } from '@/components/site/site-chrome'
 import { PageHeader } from '@/components/site/page-header'
 import { MatchCard } from '@/components/site/match-card'
+import { ClubLogo } from '@/components/site/club-logo'
 import { TeamFilterTabs } from '@/components/site/team-filter-tabs'
 import { Reveal } from '@/components/ui/motion'
-import { Badge } from '@/components/ui/badge'
+import { Badge, LiveDot } from '@/components/ui/badge'
 import { getNextMatch, getResults, getUpcoming } from '@/lib/data'
 import { TEAM_SLUGS, type TeamSlug } from '@/lib/constants'
 import { formatDateFr, formatTime } from '@/lib/format'
@@ -37,14 +38,22 @@ export default async function MatchesPage({ searchParams }: { searchParams: Prom
               </p>
               {nextMatch.status === 'LIVE' && (
                 <Badge tone="live">
-                  <span className="h-1.5 w-1.5 animate-pulse-live rounded-full bg-white" /> En direct
+                  <LiveDot /> En direct
                 </Badge>
               )}
             </Reveal>
             <Reveal className="grid gap-8 border-t border-white/15 pt-8 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
-              <div className="text-center sm:text-left">
-                <p className="text-[10px] uppercase tracking-widest text-white/50">{nextMatch.competition.name}</p>
-                <h2 className="mt-2 font-display text-3xl font-black uppercase sm:text-5xl">{nextMatch.isHome ? 'AKWABA FC' : nextMatch.opponent}</h2>
+              <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+                <ClubLogo
+                  name={nextMatch.isHome ? 'AKWABA FC' : nextMatch.opponent}
+                  logoUrl={nextMatch.isHome ? undefined : nextMatch.opponentLogo}
+                  size={52}
+                  className="border-2"
+                />
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-white/50">{nextMatch.competition.name}</p>
+                  <h2 className="mt-1 font-display text-3xl font-black uppercase sm:text-5xl">{nextMatch.isHome ? 'AKWABA FC' : nextMatch.opponent}</h2>
+                </div>
               </div>
               <div className="text-center">
                 <p className="font-display text-4xl font-black text-accent">
@@ -55,9 +64,17 @@ export default async function MatchesPage({ searchParams }: { searchParams: Prom
                 </p>
                 <p className="text-[11px] uppercase tracking-widest text-white/40">{nextMatch.stadium}</p>
               </div>
-              <div className="text-center sm:text-right">
-                <p className="text-[10px] uppercase tracking-widest text-white/50">&nbsp;</p>
-                <h2 className="mt-2 font-display text-3xl font-black uppercase sm:text-5xl">{nextMatch.isHome ? nextMatch.opponent : 'AKWABA FC'}</h2>
+              <div className="flex flex-col items-center gap-4 text-center sm:flex-row-reverse sm:text-right">
+                <ClubLogo
+                  name={nextMatch.isHome ? nextMatch.opponent : 'AKWABA FC'}
+                  logoUrl={nextMatch.isHome ? nextMatch.opponentLogo : undefined}
+                  size={52}
+                  className="border-2"
+                />
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-white/50">&nbsp;</p>
+                  <h2 className="mt-1 font-display text-3xl font-black uppercase sm:text-5xl">{nextMatch.isHome ? nextMatch.opponent : 'AKWABA FC'}</h2>
+                </div>
               </div>
             </Reveal>
             <Reveal className="mt-8 flex flex-wrap justify-center gap-3 sm:justify-start">

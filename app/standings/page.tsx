@@ -1,5 +1,6 @@
 import { SiteChrome } from '@/components/site/site-chrome'
 import { PageHeader } from '@/components/site/page-header'
+import { ClubLogo } from '@/components/site/club-logo'
 import { Reveal } from '@/components/ui/motion'
 import { getStandings } from '@/lib/data'
 import { TEAM_SLUGS, TEAM_LABELS, type TeamSlug } from '@/lib/constants'
@@ -23,8 +24,10 @@ export default async function StandingsPage({ searchParams }: { searchParams: Pr
               <a
                 key={slug}
                 href={`/standings?team=${slug}`}
-                className={`shrink-0 border px-4 py-2 text-[11px] font-bold uppercase tracking-widest ${
-                  active === slug ? 'border-accent bg-accent text-[#071a2f]' : 'border-border text-muted-foreground hover:border-accent-foreground'
+                className={`shrink-0 rounded-full border px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all ${
+                  active === slug
+                    ? 'border-accent bg-accent text-[#071a2f] shadow-md shadow-accent/30'
+                    : 'border-border text-muted-foreground hover:-translate-y-0.5 hover:border-accent-foreground'
                 }`}
               >
                 {TEAM_LABELS[slug as TeamSlug]}
@@ -54,7 +57,12 @@ export default async function StandingsPage({ searchParams }: { searchParams: Pr
                   {group.rows.map((row) => (
                     <tr key={row.id} className={`border-b border-border last:border-b-0 ${row.isClub ? 'bg-accent/10 font-bold' : ''}`}>
                       <td className="px-4 py-3">{row.position}</td>
-                      <td className="px-4 py-3">{row.club}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2.5">
+                          <ClubLogo name={row.club} size={26} />
+                          {row.club}
+                        </div>
+                      </td>
                       <td className="px-4 py-3 text-right">{row.played}</td>
                       <td className="px-4 py-3 text-right">{row.won}</td>
                       <td className="px-4 py-3 text-right">{row.drawn}</td>

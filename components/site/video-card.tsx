@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Play } from 'lucide-react'
 import { VIDEO_CATEGORY_LABELS, type VideoCategory } from '@/lib/constants'
 import { formatDuration } from '@/lib/format'
-import { Badge } from '@/components/ui/badge'
+import { Badge, LiveDot } from '@/components/ui/badge'
 
 type VideoLike = {
   slug: string
@@ -29,7 +29,7 @@ export function VideoCard({ video }: { video: VideoLike }) {
         </span>
         {video.isLive ? (
           <Badge tone="live" className="absolute left-3 top-3">
-            <span className="h-1.5 w-1.5 animate-pulse-live rounded-full bg-white" /> Live
+            <LiveDot /> Live
           </Badge>
         ) : (
           <span className="absolute bottom-3 right-3 rounded-full bg-primary/90 px-3 py-1 text-[10px] font-bold text-white backdrop-blur-sm">

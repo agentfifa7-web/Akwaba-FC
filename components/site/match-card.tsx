@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import { formatDateShort, formatTime } from '@/lib/format'
-import { Badge } from '@/components/ui/badge'
+import { Badge, LiveDot } from '@/components/ui/badge'
+import { ClubLogo } from '@/components/site/club-logo'
 import { MapPin } from 'lucide-react'
 
 type MatchLike = {
   id: string
   opponent: string
+  opponentLogo?: string | null
   isHome: boolean
   date: Date | string
   stadium: string
@@ -28,14 +30,17 @@ export function MatchCard({ match }: { match: MatchLike }) {
         <span className="rounded-full bg-secondary px-3 py-1">{match.competition.name}</span>
         {match.status === 'LIVE' ? (
           <Badge tone="live">
-            <span className="h-1.5 w-1.5 animate-pulse-live rounded-full bg-white" /> En direct
+            <LiveDot /> En direct
           </Badge>
         ) : (
           <span>{formatDateShort(match.date)}</span>
         )}
       </div>
       <div className="flex items-center justify-between gap-3">
-        <p className="flex-1 text-sm font-bold leading-tight">{home}</p>
+        <div className="flex min-w-0 flex-1 items-center gap-2.5">
+          <ClubLogo name={home} logoUrl={match.isHome ? undefined : match.opponentLogo} size={30} />
+          <p className="truncate text-sm font-bold leading-tight">{home}</p>
+        </div>
         <p
           className={
             match.status === 'SCHEDULED'
@@ -45,7 +50,10 @@ export function MatchCard({ match }: { match: MatchLike }) {
         >
           {match.status === 'SCHEDULED' ? 'VS' : `${match.homeScore} - ${match.awayScore}`}
         </p>
-        <p className="flex-1 text-right text-sm font-bold leading-tight">{away}</p>
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-2.5 text-right">
+          <p className="truncate text-sm font-bold leading-tight">{away}</p>
+          <ClubLogo name={away} logoUrl={match.isHome ? match.opponentLogo : undefined} size={30} />
+        </div>
       </div>
       <div className="mt-5 flex items-center justify-between rounded-2xl bg-secondary/60 px-4 py-2.5 text-[10px] uppercase tracking-widest text-muted-foreground">
         <span className="flex items-center gap-1.5 truncate">

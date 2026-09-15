@@ -4,7 +4,8 @@ import { SiteChrome } from '@/components/site/site-chrome'
 import { Reveal, Counter } from '@/components/ui/motion'
 import { NewsCard } from '@/components/site/news-card'
 import { NewsletterForm } from '@/components/site/newsletter-form'
-import { Badge } from '@/components/ui/badge'
+import { ClubLogo } from '@/components/site/club-logo'
+import { Badge, LiveDot } from '@/components/ui/badge'
 import {
   getNextMatch,
   getNews,
@@ -69,14 +70,19 @@ export default async function HomePage() {
                   <span className="text-[10px] text-white/60">{nextMatch.matchday ?? nextMatch.competition.name}</span>
                 </div>
                 <div className="flex items-center justify-between gap-5">
-                  <div className="text-center">
-                    <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full border border-accent/70 font-display text-lg font-bold text-accent">AFC</div>
+                  <div className="group text-center">
+                    <ClubLogo
+                      name={nextMatch.isHome ? 'AKWABA FC' : nextMatch.opponent}
+                      logoUrl={nextMatch.isHome ? undefined : nextMatch.opponentLogo}
+                      size={56}
+                      className="mx-auto mb-3 border-2"
+                    />
                     <p className="text-xs font-bold text-white">{nextMatch.isHome ? 'AKWABA FC' : nextMatch.opponent}</p>
                   </div>
                   <div className="text-center">
                     {nextMatch.status === 'LIVE' ? (
                       <Badge tone="live">
-                        <span className="h-1.5 w-1.5 animate-pulse-live rounded-full bg-white" /> Live
+                        <LiveDot /> Live
                       </Badge>
                     ) : (
                       <p className="font-display text-3xl font-bold text-white">VS</p>
@@ -85,10 +91,13 @@ export default async function HomePage() {
                       {formatDateFr(nextMatch.date, 'd MMM')} · {formatTime(nextMatch.date)}
                     </p>
                   </div>
-                  <div className="text-center">
-                    <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full border border-white/30 font-display text-lg font-bold text-white/70">
-                      {nextMatch.isHome ? nextMatch.opponent.slice(0, 2).toUpperCase() : 'AFC'}
-                    </div>
+                  <div className="group text-center">
+                    <ClubLogo
+                      name={nextMatch.isHome ? nextMatch.opponent : 'AKWABA FC'}
+                      logoUrl={nextMatch.isHome ? nextMatch.opponentLogo : undefined}
+                      size={56}
+                      className="mx-auto mb-3 border-2"
+                    />
                     <p className="text-xs font-bold text-white">{nextMatch.isHome ? nextMatch.opponent : 'AKWABA FC'}</p>
                   </div>
                 </div>
@@ -183,7 +192,7 @@ export default async function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-primary to-transparent" />
                   {liveVideo.isLive && (
                     <Badge tone="live" className="absolute right-6 top-6">
-                      <span className="h-1.5 w-1.5 animate-pulse-live rounded-full bg-white" /> Live
+                      <LiveDot /> Live
                     </Badge>
                   )}
                   <div className="absolute bottom-0 p-7">

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { SiteChrome } from '@/components/site/site-chrome'
 import { Reveal } from '@/components/ui/motion'
 import { VideoCard } from '@/components/site/video-card'
-import { Badge } from '@/components/ui/badge'
+import { Badge, LiveDot } from '@/components/ui/badge'
 import { getVideoBySlug, getVideos } from '@/lib/data'
 import { VIDEO_CATEGORY_LABELS, type VideoCategory } from '@/lib/constants'
 import { formatDateFr, formatDuration } from '@/lib/format'
@@ -35,7 +35,7 @@ export default async function VideoPage({ params }: { params: Promise<{ slug: st
               <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-accent">{VIDEO_CATEGORY_LABELS[video.category as VideoCategory]}</span>
               {video.isLive && (
                 <Badge tone="live">
-                  <span className="h-1.5 w-1.5 animate-pulse-live rounded-full bg-white" /> En direct
+                  <LiveDot /> En direct
                 </Badge>
               )}
               {!video.isLive && <span className="text-[11px] text-white/50">{formatDuration(video.durationSeconds)}</span>}

@@ -3,7 +3,7 @@ import { SiteChrome } from '@/components/site/site-chrome'
 import { PageHeader } from '@/components/site/page-header'
 import { VideoCard } from '@/components/site/video-card'
 import { Reveal } from '@/components/ui/motion'
-import { Badge } from '@/components/ui/badge'
+import { Badge, LiveDot } from '@/components/ui/badge'
 import { getLiveVideo, getVideos } from '@/lib/data'
 import { VIDEO_CATEGORIES, VIDEO_CATEGORY_LABELS, type VideoCategory } from '@/lib/constants'
 import { img } from '@/lib/images'
@@ -26,7 +26,7 @@ export default async function ClubTvPage({ searchParams }: { searchParams: Promi
           <div className="mx-auto max-w-[1440px]">
             <Reveal>
               <Badge tone="live" className="mb-6">
-                <span className="h-1.5 w-1.5 animate-pulse-live rounded-full bg-white" /> En direct
+                <LiveDot /> En direct
               </Badge>
               <Link href={`/club-tv/${liveVideo.slug}`} className="group relative block aspect-video overflow-hidden">
                 <img src={liveVideo.thumbnailUrl} alt="" className="h-full w-full object-cover opacity-70 transition-transform duration-700 group-hover:scale-105" />

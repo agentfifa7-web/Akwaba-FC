@@ -1,6 +1,7 @@
 import { SiteChrome } from '@/components/site/site-chrome'
 import { PageHeader } from '@/components/site/page-header'
 import { Reveal } from '@/components/ui/motion'
+import { ClubLogo } from '@/components/site/club-logo'
 import { TicketPurchaseButton } from '@/components/site/ticket-purchase'
 import { getUpcomingTicketMatches } from '@/lib/data'
 import { formatCFA } from '@/lib/format'
@@ -24,8 +25,10 @@ export default async function TicketsPage() {
               <div className="flex flex-col justify-between gap-3 border-b border-border p-6 sm:flex-row sm:items-center">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-accent-foreground">{match.competition.name}</p>
-                  <h2 className="mt-1 font-display text-2xl font-black uppercase">
+                  <h2 className="mt-2 flex items-center gap-3 font-display text-2xl font-black uppercase">
+                    <ClubLogo name={match.isHome ? 'AKWABA FC' : match.opponent} logoUrl={match.isHome ? undefined : match.opponentLogo} size={32} />
                     {match.isHome ? 'AKWABA FC' : match.opponent} vs {match.isHome ? match.opponent : 'AKWABA FC'}
+                    <ClubLogo name={match.isHome ? match.opponent : 'AKWABA FC'} logoUrl={match.isHome ? match.opponentLogo : undefined} size={32} />
                   </h2>
                 </div>
                 <div className="text-left text-sm text-muted-foreground sm:text-right">
@@ -35,7 +38,7 @@ export default async function TicketsPage() {
               </div>
               <div className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-4">
                 {match.ticketOffers.map((offer) => (
-                  <div key={offer.id} className="flex flex-col justify-between border border-border p-5">
+                  <div key={offer.id} className="card-elevated card-elevated-hover flex flex-col justify-between p-5">
                     <div>
                       <p className="text-sm font-bold uppercase tracking-widest text-primary">{TICKET_TIER_LABELS[offer.tier as TicketTier] ?? offer.tier}</p>
                       <p className="mt-2 font-display text-2xl font-black text-accent-foreground">{formatCFA(offer.price)}</p>
