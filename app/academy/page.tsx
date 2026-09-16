@@ -71,11 +71,11 @@ export default async function AcademyPage() {
             </Reveal>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {educators.map((member) => (
-                <div key={member.id} className="card-elevated p-5 text-center">
-                  <img src={member.photoUrl ?? ''} alt={member.name} className="mx-auto aspect-square w-20 rounded-full object-cover" />
-                  <p className="mt-3 text-sm font-bold">{member.name}</p>
+                <Link key={member.id} href={`/staff/${member.slug}`} className="card-elevated card-elevated-hover group block p-5 text-center">
+                  <img src={member.photoUrl ?? ''} alt={member.name} className="mx-auto aspect-square w-20 rounded-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <p className="mt-3 text-sm font-bold group-hover:text-accent-foreground">{member.name}</p>
                   <p className="text-[11px] uppercase tracking-widest text-muted-foreground">{member.role}</p>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

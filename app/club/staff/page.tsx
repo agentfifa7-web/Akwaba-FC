@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { SiteChrome } from '@/components/site/site-chrome'
 import { PageHeader } from '@/components/site/page-header'
 import { ClubSideNav } from '@/components/site/club-side-nav'
@@ -30,10 +31,12 @@ export default async function StaffPage() {
                 </h2>
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                   {group.members.map((member, i) => (
-                    <Reveal key={member.id} delay={i * 0.05} className="card-elevated p-5 text-center">
-                      <img src={member.photoUrl ?? ''} alt={member.name} className="mx-auto aspect-square w-20 rounded-full object-cover" />
-                      <p className="mt-3 text-sm font-bold">{member.name}</p>
-                      <p className="text-[11px] uppercase tracking-widest text-muted-foreground">{member.role}</p>
+                    <Reveal key={member.id} delay={i * 0.05}>
+                      <Link href={`/staff/${member.slug}`} className="card-elevated card-elevated-hover group block p-5 text-center">
+                        <img src={member.photoUrl ?? ''} alt={member.name} className="mx-auto aspect-square w-20 rounded-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <p className="mt-3 text-sm font-bold group-hover:text-accent-foreground">{member.name}</p>
+                        <p className="text-[11px] uppercase tracking-widest text-muted-foreground">{member.role}</p>
+                      </Link>
                     </Reveal>
                   ))}
                 </div>

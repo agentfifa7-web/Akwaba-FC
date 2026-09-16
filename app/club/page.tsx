@@ -65,11 +65,11 @@ export default async function ClubPage() {
               <p className="mb-6 text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">La direction du club</p>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 {direction.map((member) => (
-                  <div key={member.id} className="text-center">
-                    <img src={member.photoUrl ?? ''} alt={member.name} className="mx-auto aspect-square w-24 rounded-full object-cover" />
-                    <p className="mt-3 text-sm font-bold text-foreground">{member.name}</p>
+                  <Link key={member.id} href={`/staff/${member.slug}`} className="group text-center">
+                    <img src={member.photoUrl ?? ''} alt={member.name} className="mx-auto aspect-square w-24 rounded-full object-cover shadow-sm transition-transform duration-500 group-hover:scale-105" />
+                    <p className="mt-3 text-sm font-bold text-foreground group-hover:text-accent-foreground">{member.name}</p>
                     <p className="text-[11px] uppercase tracking-widest text-muted-foreground">{member.role}</p>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </Reveal>

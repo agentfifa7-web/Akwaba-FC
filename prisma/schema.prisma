@@ -182,14 +182,18 @@ model PlayerProgressEntry {
 }
 
 model StaffMember {
-  id         String  @id @default(cuid())
-  slug       String  @unique
-  name       String
-  role       String
-  department String // DIRECTION | MEN | WOMEN | RESERVE | U18 | ACADEMY | MEDIA
-  photoUrl   String?
-  bio        String?
-  order      Int     @default(0)
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  role        String
+  department  String // DIRECTION | MEN | WOMEN | RESERVE | U18 | ACADEMY | MEDIA
+  photoUrl    String?
+  bio         String?
+  email       String?
+  phone       String?
+  joinedAt    DateTime?
+  linkedinUrl String?
+  order       Int       @default(0)
 
   teamId String?
   team   Team?   @relation(fields: [teamId], references: [id], onDelete: SetNull)

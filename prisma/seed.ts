@@ -246,15 +246,21 @@ async function main() {
     { name: 'Aïcha Bamba', role: 'Responsable communication', department: 'MEDIA' },
     { name: 'Sylvain Gogoua', role: 'Réalisateur Club TV', department: 'MEDIA' },
   ]
-  for (const s of staffDefs) {
+  for (const [si, s] of staffDefs.entries()) {
+    const staffSlug = slugify(s.name)
+    const joinedYearsAgo = 1 + (si % 8)
     await prisma.staffMember.create({
       data: {
-        slug: slugify(s.name),
+        slug: staffSlug,
         name: s.name,
         role: s.role,
         department: s.department,
         photoUrl: avatar(s.name),
         bio: `${s.name} accompagne AKWABA FC au poste de ${s.role.toLowerCase()}, avec pour mission d’élever le club à chaque saison.`,
+        email: `${staffSlug}@akwabafc.ci`,
+        phone: `+225 07 ${String(10 + si).padStart(2, '0')} ${String(20 + si).padStart(2, '0')} ${String(30 + si).padStart(2, '0')} ${String(40 + si).padStart(2, '0')}`,
+        joinedAt: new Date(Date.now() - joinedYearsAgo * 365 * 86400000),
+        linkedinUrl: `https://www.linkedin.com/in/${staffSlug}`,
         teamId: s.teamSlug ? teams[s.teamSlug].id : undefined,
       },
     })

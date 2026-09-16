@@ -366,6 +366,10 @@ const staffSchema = z.object({
   department: z.enum(STAFF_DEPARTMENTS),
   photoUrl: z.string().optional(),
   bio: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  joinedAt: z.string().optional(),
+  linkedinUrl: z.string().optional(),
   teamSlug: z.string().optional(),
 })
 
@@ -376,6 +380,10 @@ async function staffFromForm(formData: FormData) {
     department: str(formData, 'department'),
     photoUrl: optStr(formData, 'photoUrl'),
     bio: optStr(formData, 'bio'),
+    email: optStr(formData, 'email'),
+    phone: optStr(formData, 'phone'),
+    joinedAt: optStr(formData, 'joinedAt'),
+    linkedinUrl: optStr(formData, 'linkedinUrl'),
     teamSlug: optStr(formData, 'teamSlug'),
   })
 }
@@ -395,6 +403,10 @@ export async function createStaffAction(_prev: ActionState, formData: FormData):
       role: data.role,
       department: data.department,
       bio: data.bio,
+      email: data.email,
+      phone: data.phone,
+      joinedAt: data.joinedAt ? new Date(data.joinedAt) : undefined,
+      linkedinUrl: data.linkedinUrl,
       photoUrl: data.photoUrl || avatar(data.name),
       slug: `${slugify(data.name)}-${Date.now().toString(36)}`,
       teamId: team?.id,
@@ -415,7 +427,18 @@ export async function updateStaffAction(id: string, _prev: ActionState, formData
   const team = data.teamSlug ? await prisma.team.findUnique({ where: { slug: data.teamSlug } }) : null
   await prisma.staffMember.update({
     where: { id },
-    data: { name: data.name, role: data.role, department: data.department, photoUrl: data.photoUrl, bio: data.bio, teamId: team?.id ?? null },
+    data: {
+      name: data.name,
+      role: data.role,
+      department: data.department,
+      photoUrl: data.photoUrl,
+      bio: data.bio,
+      email: data.email ?? null,
+      phone: data.phone ?? null,
+      joinedAt: data.joinedAt ? new Date(data.joinedAt) : null,
+      linkedinUrl: data.linkedinUrl ?? null,
+      teamId: team?.id ?? null,
+    },
   })
   revalidatePath('/admin/staff')
   redirect('/admin/staff')

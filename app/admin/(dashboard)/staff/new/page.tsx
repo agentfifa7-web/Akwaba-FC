@@ -8,6 +8,10 @@ const fields: FormFieldDef[] = [
   { name: 'department', label: 'Département', type: 'select', required: true, options: STAFF_DEPARTMENTS.map((d) => ({ value: d, label: STAFF_DEPARTMENT_LABELS[d as StaffDepartment] })) },
   { name: 'teamSlug', label: 'Équipe associée (optionnel)', type: 'select', options: TEAM_SLUGS.map((t) => ({ value: t, label: TEAM_LABELS[t as TeamSlug] })) },
   { name: 'photoUrl', label: 'Photo (URL, optionnel)', type: 'url', span: 2 },
+  { name: 'email', label: 'E-mail (optionnel)', type: 'email' },
+  { name: 'phone', label: 'Téléphone (optionnel)', type: 'tel' },
+  { name: 'joinedAt', label: 'Au club depuis (optionnel)', type: 'date' },
+  { name: 'linkedinUrl', label: 'LinkedIn (URL, optionnel)', type: 'url' },
   { name: 'bio', label: 'Biographie', type: 'textarea', span: 2 },
 ]
 
