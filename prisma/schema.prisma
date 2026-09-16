@@ -73,32 +73,40 @@ model Team {
 }
 
 model Player {
-  id             String   @id @default(cuid())
-  slug           String   @unique
-  firstName      String
-  lastName       String
-  number         Int
-  position       String // GK | DEF | MID | FWD
-  birthDate      DateTime
-  nationality    String
-  height         Int? // cm
-  preferredFoot  String? // GAUCHE | DROIT | AMBIDEXTRE
-  photoUrl       String?
-  bio            String?
-  captain        Boolean  @default(false)
-  appearances    Int      @default(0)
-  goals          Int      @default(0)
-  assists        Int      @default(0)
-  minutes        Int      @default(0)
-  yellowCards    Int      @default(0)
-  redCards       Int      @default(0)
-  joinedAt       DateTime @default(now())
-  active         Boolean  @default(true)
+  id                String   @id @default(cuid())
+  slug              String   @unique
+  firstName         String
+  lastName          String
+  number            Int
+  position          String // GK | DEF | MID | FWD
+  birthDate         DateTime
+  nationality       String
+  height            Int? // cm
+  preferredFoot     String? // GAUCHE | DROIT | AMBIDEXTRE
+  photoUrl          String?
+  highlightVideoUrl String? // petite vidéo highlight utilisée en fond de la fiche joueur
+  bio               String?
+  captain           Boolean  @default(false)
+  // Totaux carrière (toutes compétitions confondues) — recalculés
+  // automatiquement à chaque enregistrement d'une feuille de match.
+  appearances       Int      @default(0)
+  goals             Int      @default(0)
+  assists           Int      @default(0)
+  minutes           Int      @default(0)
+  yellowCards       Int      @default(0)
+  redCards          Int      @default(0)
+  // Attributs radar (0-100) : rythme, tir, passe, dribble, défense, physique
+  attributes        Json?
+  joinedAt          DateTime @default(now())
+  active            Boolean  @default(true)
 
   teamId String
   team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
-  careerSteps PlayerCareerStep[]
+  careerSteps      PlayerCareerStep[]
+  matchAppearances MatchAppearance[]
+  media            PlayerMedia[]
+  progressEntries  PlayerProgressEntry[]
 
   @@index([teamId])
 }
@@ -112,6 +120,65 @@ model PlayerCareerStep {
 
   playerId String
   player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+}
+
+// Feuille de match : une ligne par joueur ayant participé à un match donné.
+// C'est la source de vérité utilisée pour recalculer automatiquement les
+// statistiques (globales et par compétition) d'un joueur.
+model MatchAppearance {
+  id            String  @id @default(cuid())
+  started       Boolean @default(true)
+  minutesPlayed Int     @default(0)
+  goals         Int     @default(0)
+  assists       Int     @default(0)
+  yellowCards   Int     @default(0)
+  redCards      Int     @default(0)
+  rating        Float? // note de performance /10 (optionnelle)
+
+  matchId String
+  match   Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  playerId String
+  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, playerId])
+  @@index([playerId])
+}
+
+// Photos / vidéos affichées sur la fiche de présentation d'un joueur
+// (3 à 5 photos conseillées + quelques liens/vidéos courtes).
+model PlayerMedia {
+  id        String   @id @default(cuid())
+  type      String // PHOTO | VIDEO
+  url       String
+  caption   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  playerId String
+  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+}
+
+// Courbe de progression du joueur : un point par match (généré
+// automatiquement depuis la feuille de match) ou par entraînement
+// (saisi manuellement par le staff).
+model PlayerProgressEntry {
+  id     String   @id @default(cuid())
+  date   DateTime @default(now())
+  type   String // MATCH | TRAINING
+  rating Float // note /10
+  note   String?
+
+  playerId String
+  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  matchId String?
+  match   Match?  @relation(fields: [matchId], references: [id], onDelete: SetNull)
+
+  @@unique([playerId, matchId])
+  @@index([playerId])
 }
 
 model StaffMember {
@@ -162,6 +229,8 @@ model Match {
   competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
 
   events        MatchEvent[]
+  appearances   MatchAppearance[]
+  progressEntries PlayerProgressEntry[]
   ticketOffers  TicketOffer[]
   galleryImages GalleryImage[]
 

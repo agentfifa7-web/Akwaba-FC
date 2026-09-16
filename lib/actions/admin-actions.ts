@@ -22,6 +22,7 @@ import {
   APPLICATION_STATUSES,
   ORDER_STATUSES,
   ROLES,
+  PLAYER_MEDIA_TYPES,
 } from '@/lib/constants'
 
 export type ActionState = { error?: string; success?: string }
@@ -156,6 +157,7 @@ const playerSchema = z.object({
   height: z.coerce.number().optional(),
   preferredFoot: z.string().optional(),
   photoUrl: z.string().optional(),
+  highlightVideoUrl: z.string().optional(),
   bio: z.string().optional(),
   captain: z.boolean(),
   active: z.boolean(),
@@ -166,6 +168,12 @@ const playerSchema = z.object({
   minutes: z.coerce.number().default(0),
   yellowCards: z.coerce.number().default(0),
   redCards: z.coerce.number().default(0),
+  pace: z.coerce.number().min(0).max(100).default(60),
+  shooting: z.coerce.number().min(0).max(100).default(60),
+  passing: z.coerce.number().min(0).max(100).default(60),
+  dribbling: z.coerce.number().min(0).max(100).default(60),
+  defending: z.coerce.number().min(0).max(100).default(60),
+  physical: z.coerce.number().min(0).max(100).default(60),
 })
 
 async function playerFromForm(formData: FormData) {
@@ -179,6 +187,7 @@ async function playerFromForm(formData: FormData) {
     height: optStr(formData, 'height'),
     preferredFoot: optStr(formData, 'preferredFoot'),
     photoUrl: optStr(formData, 'photoUrl'),
+    highlightVideoUrl: optStr(formData, 'highlightVideoUrl'),
     bio: optStr(formData, 'bio'),
     captain: formData.get('captain') === 'on',
     active: formData.get('active') === 'on',
@@ -189,6 +198,12 @@ async function playerFromForm(formData: FormData) {
     minutes: str(formData, 'minutes') || '0',
     yellowCards: str(formData, 'yellowCards') || '0',
     redCards: str(formData, 'redCards') || '0',
+    pace: str(formData, 'pace') || '60',
+    shooting: str(formData, 'shooting') || '60',
+    passing: str(formData, 'passing') || '60',
+    dribbling: str(formData, 'dribbling') || '60',
+    defending: str(formData, 'defending') || '60',
+    physical: str(formData, 'physical') || '60',
   })
 }
 
@@ -202,11 +217,12 @@ export async function createPlayerAction(_prev: ActionState, formData: FormData)
   }
   const team = await prisma.team.findUnique({ where: { slug: data.teamSlug } })
   if (!team) return { error: 'Équipe introuvable' }
-  const { teamSlug, photoUrl, ...rest } = data
+  const { teamSlug, photoUrl, pace, shooting, passing, dribbling, defending, physical, ...rest } = data
   await prisma.player.create({
     data: {
       ...rest,
       photoUrl: photoUrl || avatar(`${data.firstName} ${data.lastName}`),
+      attributes: { pace, shooting, passing, dribbling, defending, physical },
       birthDate: new Date(data.birthDate),
       slug: `${slugify(`${data.firstName}-${data.lastName}`)}-${data.number}-${Date.now().toString(36)}`,
       teamId: team.id,
@@ -227,12 +243,13 @@ export async function updatePlayerAction(id: string, _prev: ActionState, formDat
   }
   const team = await prisma.team.findUnique({ where: { slug: data.teamSlug } })
   if (!team) return { error: 'Équipe introuvable' }
-  const { teamSlug, photoUrl, ...rest } = data
+  const { teamSlug, photoUrl, pace, shooting, passing, dribbling, defending, physical, ...rest } = data
   await prisma.player.update({
     where: { id },
     data: {
       ...rest,
       photoUrl: photoUrl || undefined,
+      attributes: { pace, shooting, passing, dribbling, defending, physical },
       birthDate: new Date(data.birthDate),
       teamId: team.id,
     },
@@ -240,6 +257,69 @@ export async function updatePlayerAction(id: string, _prev: ActionState, formDat
   revalidatePath('/admin/players')
   revalidatePath(`/teams/${teamSlug}`)
   redirect('/admin/players')
+}
+
+// ---------------------------------------------------------------------------
+// Fiche joueur — médias (photos/vidéos) et progression
+// ---------------------------------------------------------------------------
+
+const playerMediaSchema = z.object({
+  type: z.enum(PLAYER_MEDIA_TYPES),
+  url: z.string().min(1),
+  caption: z.string().optional(),
+})
+
+export async function addPlayerMediaAction(playerId: string, formData: FormData) {
+  await requireRole('SUPER_ADMIN', 'ADMIN', 'SPORT_MANAGER', 'MEDIA_MANAGER')
+  let data
+  try {
+    data = playerMediaSchema.parse({
+      type: str(formData, 'type'),
+      url: str(formData, 'url'),
+      caption: optStr(formData, 'caption'),
+    })
+  } catch {
+    return
+  }
+  const count = await prisma.playerMedia.count({ where: { playerId } })
+  await prisma.playerMedia.create({ data: { ...data, playerId, order: count } })
+  revalidatePath(`/admin/players/${playerId}`)
+}
+
+export async function deletePlayerMediaAction(id: string) {
+  await requireRole('SUPER_ADMIN', 'ADMIN', 'SPORT_MANAGER', 'MEDIA_MANAGER')
+  const media = await prisma.playerMedia.delete({ where: { id } })
+  revalidatePath(`/admin/players/${media.playerId}`)
+}
+
+const playerProgressSchema = z.object({
+  date: z.string().min(1),
+  rating: z.coerce.number().min(0).max(10),
+  note: z.string().optional(),
+})
+
+export async function addPlayerProgressAction(playerId: string, formData: FormData) {
+  await requireRole('SUPER_ADMIN', 'ADMIN', 'SPORT_MANAGER')
+  let data
+  try {
+    data = playerProgressSchema.parse({
+      date: str(formData, 'date'),
+      rating: str(formData, 'rating'),
+      note: optStr(formData, 'note'),
+    })
+  } catch {
+    return
+  }
+  await prisma.playerProgressEntry.create({
+    data: { playerId, type: 'TRAINING', date: new Date(data.date), rating: data.rating, note: data.note },
+  })
+  revalidatePath(`/admin/players/${playerId}`)
+}
+
+export async function deletePlayerProgressAction(id: string) {
+  await requireRole('SUPER_ADMIN', 'ADMIN', 'SPORT_MANAGER')
+  const entry = await prisma.playerProgressEntry.delete({ where: { id } })
+  revalidatePath(`/admin/players/${entry.playerId}`)
 }
 
 export async function deletePlayerAction(id: string) {
@@ -471,6 +551,73 @@ export async function deleteMatchEventAction(id: string) {
   const event = await prisma.matchEvent.delete({ where: { id } })
   revalidatePath(`/admin/matches/${event.matchId}`)
   revalidatePath(`/matches/${event.matchId}`)
+}
+
+function clamp(n: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, Number.isFinite(n) ? n : min))
+}
+
+// Feuille de match : une ligne par joueur de l'effectif. À l'enregistrement,
+// on met à jour la table MatchAppearance (source de vérité des stats), on
+// génère automatiquement un point de progression "MATCH" par joueur ayant
+// joué, puis on recalcule les totaux carrière mis en cache sur Player —
+// c'est ce qui rend la mise à jour des statistiques automatique.
+export async function saveMatchSheetAction(matchId: string, formData: FormData): Promise<void> {
+  await requireRole('SUPER_ADMIN', 'ADMIN', 'SPORT_MANAGER')
+  const match = await prisma.match.findUnique({ where: { id: matchId }, include: { team: true } })
+  if (!match) return
+  const squad = await prisma.player.findMany({ where: { teamId: match.teamId } })
+
+  for (const player of squad) {
+    const selected = formData.get(`selected_${player.id}`) === 'on'
+    if (!selected) {
+      await prisma.matchAppearance.deleteMany({ where: { matchId, playerId: player.id } })
+      await prisma.playerProgressEntry.deleteMany({ where: { matchId, playerId: player.id } })
+      continue
+    }
+    const started = formData.get(`started_${player.id}`) === 'on'
+    const minutesPlayed = clamp(Number(formData.get(`minutes_${player.id}`)), 0, 120)
+    const goals = clamp(Number(formData.get(`goals_${player.id}`)), 0, 20)
+    const assists = clamp(Number(formData.get(`assists_${player.id}`)), 0, 20)
+    const yellowCards = clamp(Number(formData.get(`yellow_${player.id}`)), 0, 2)
+    const redCards = clamp(Number(formData.get(`red_${player.id}`)), 0, 1)
+
+    await prisma.matchAppearance.upsert({
+      where: { matchId_playerId: { matchId, playerId: player.id } },
+      create: { matchId, playerId: player.id, started, minutesPlayed, goals, assists, yellowCards, redCards },
+      update: { started, minutesPlayed, goals, assists, yellowCards, redCards },
+    })
+
+    const rating = clamp(6 + goals * 1 + assists * 0.5 - redCards * 2 - yellowCards * 0.5 + (minutesPlayed >= 60 ? 0.3 : 0), 0, 10)
+    await prisma.playerProgressEntry.upsert({
+      where: { playerId_matchId: { playerId: player.id, matchId } },
+      create: { playerId: player.id, matchId, type: 'MATCH', date: match.date, rating },
+      update: { type: 'MATCH', date: match.date, rating },
+    })
+  }
+
+  for (const player of squad) {
+    const agg = await prisma.matchAppearance.aggregate({
+      where: { playerId: player.id },
+      _sum: { minutesPlayed: true, goals: true, assists: true, yellowCards: true, redCards: true },
+      _count: { id: true },
+    })
+    await prisma.player.update({
+      where: { id: player.id },
+      data: {
+        appearances: agg._count.id,
+        goals: agg._sum.goals ?? 0,
+        assists: agg._sum.assists ?? 0,
+        minutes: agg._sum.minutesPlayed ?? 0,
+        yellowCards: agg._sum.yellowCards ?? 0,
+        redCards: agg._sum.redCards ?? 0,
+      },
+    })
+  }
+
+  revalidatePath(`/admin/matches/${matchId}`)
+  revalidatePath(`/matches/${matchId}`)
+  revalidatePath(`/teams/${match.team.slug}`)
 }
 
 // ---------------------------------------------------------------------------

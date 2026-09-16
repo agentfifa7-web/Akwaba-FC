@@ -12,11 +12,13 @@ const variants: Variants = {
 export function Reveal({
   children,
   className,
+  style,
   delay = 0,
   as = 'div',
 }: {
   children: React.ReactNode
   className?: string
+  style?: React.CSSProperties
   delay?: number
   as?: 'div' | 'li'
 }) {
@@ -24,6 +26,7 @@ export function Reveal({
   return (
     <Comp
       className={className}
+      style={style}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: '-80px' }}

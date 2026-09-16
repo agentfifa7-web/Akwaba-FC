@@ -22,6 +22,7 @@ const fields: FormFieldDef[] = [
     ],
   },
   { name: 'photoUrl', label: 'Photo (URL, optionnel)', type: 'url', span: 2 },
+  { name: 'highlightVideoUrl', label: 'Vidéo highlight (URL, optionnel — utilisée en fond de la fiche joueur)', type: 'url', span: 2 },
   { name: 'bio', label: 'Biographie', type: 'textarea', span: 2 },
   { name: 'captain', label: 'Capitaine', type: 'checkbox' },
   { name: 'active', label: 'Actif dans l’effectif', type: 'checkbox' },
@@ -31,13 +32,24 @@ const fields: FormFieldDef[] = [
   { name: 'minutes', label: 'Minutes jouées', type: 'number' },
   { name: 'yellowCards', label: 'Cartons jaunes', type: 'number' },
   { name: 'redCards', label: 'Cartons rouges', type: 'number' },
+  { name: 'pace', label: 'Vitesse (0-100)', type: 'number', help: 'Attribut radar affiché sur la fiche joueur.' },
+  { name: 'shooting', label: 'Tir (0-100)', type: 'number' },
+  { name: 'passing', label: 'Passe (0-100)', type: 'number' },
+  { name: 'dribbling', label: 'Dribble (0-100)', type: 'number' },
+  { name: 'defending', label: 'Défense (0-100)', type: 'number' },
+  { name: 'physical', label: 'Physique (0-100)', type: 'number' },
 ]
 
 export default function NewPlayerPage() {
   return (
     <div>
       <h1 className="mb-8 font-display text-3xl font-black uppercase tracking-tight sm:text-4xl">Nouveau joueur</h1>
-      <AdminForm fields={fields} action={createPlayerAction} cancelHref="/admin/players" defaultValues={{ active: true }} />
+      <AdminForm
+        fields={fields}
+        action={createPlayerAction}
+        cancelHref="/admin/players"
+        defaultValues={{ active: true, pace: 60, shooting: 60, passing: 60, dribbling: 60, defending: 60, physical: 60 }}
+      />
     </div>
   )
 }

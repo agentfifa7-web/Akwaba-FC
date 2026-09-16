@@ -27,3 +27,32 @@ export function ageFromBirthDate(birthDate: Date | string) {
   const diff = Date.now() - new Date(birthDate).getTime()
   return Math.floor(diff / (365.25 * 24 * 3600 * 1000))
 }
+
+// Convertit un lien YouTube/Vimeo classique en URL "embed" utilisable dans
+// une <iframe>. Renvoie null si l'URL ne correspond à aucun des deux (dans
+// ce cas on utilisera une balise <video> classique).
+export function toEmbedUrl(url: string): string | null {
+  try {
+    const u = new URL(url)
+    if (u.hostname.includes('youtube.com')) {
+      const id = u.searchParams.get('v')
+      if (id) return `https://www.youtube.com/embed/${id}`
+      if (u.pathname.startsWith('/embed/')) return url
+    }
+    if (u.hostname === 'youtu.be') {
+      const id = u.pathname.slice(1)
+      if (id) return `https://www.youtube.com/embed/${id}`
+    }
+    if (u.hostname.includes('vimeo.com')) {
+      const id = u.pathname.split('/').filter(Boolean).pop()
+      if (id) return `https://player.vimeo.com/video/${id}`
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
+export function isVideoFile(url: string) {
+  return /\.(mp4|webm|ogg|mov)$/i.test(new URL(url, 'https://x.invalid').pathname)
+}

@@ -57,6 +57,23 @@ function pick<T>(arr: T[], i: number) {
 
 type SquadSpec = { teamSlug: 'men' | 'women' | 'reserve' | 'u18'; count: number; femaleNames: boolean; minAge: number; maxAge: number }
 
+// Bornes d'attributs radar (0-100) par poste — utilisées pour générer un
+// profil de compétences crédible pour chaque joueur de démonstration.
+const ATTRIBUTE_RANGES: Record<'GK' | 'DEF' | 'MID' | 'FWD', Record<string, [number, number]>> = {
+  GK: { pace: [42, 58], shooting: [20, 34], passing: [55, 72], dribbling: [35, 50], defending: [70, 88], physical: [66, 82] },
+  DEF: { pace: [55, 72], shooting: [30, 46], passing: [60, 76], dribbling: [45, 60], defending: [76, 92], physical: [70, 86] },
+  MID: { pace: [60, 76], shooting: [50, 66], passing: [75, 92], dribbling: [66, 82], defending: [55, 72], physical: [64, 80] },
+  FWD: { pace: [76, 92], shooting: [76, 92], passing: [55, 70], dribbling: [70, 86], defending: [24, 40], physical: [64, 80] },
+}
+function attributeValue(range: [number, number], idx: number) {
+  const [min, max] = range
+  return min + (idx % (max - min + 1))
+}
+function buildAttributes(position: 'GK' | 'DEF' | 'MID' | 'FWD', idx: number) {
+  const ranges = ATTRIBUTE_RANGES[position]
+  return Object.fromEntries(Object.entries(ranges).map(([key, range], i) => [key, attributeValue(range, idx * 7 + i * 3)]))
+}
+
 function buildSquad(spec: SquadSpec, seedOffset: number) {
   const positions: Array<'GK' | 'DEF' | 'MID' | 'FWD'> = []
   const gk = Math.max(2, Math.round(spec.count * 0.11))
@@ -101,6 +118,7 @@ function buildSquad(spec: SquadSpec, seedOffset: number) {
       minutes: 400 + (idx % 18) * 90,
       yellowCards: idx % 6,
       redCards: idx % 11 === 0 ? 1 : 0,
+      attributes: buildAttributes(position, idx),
     }
   })
 }
@@ -184,6 +202,7 @@ async function main() {
     u18: { teamSlug: 'u18', count: 18, femaleNames: false, minAge: 15, maxAge: 18 },
   }
   const playersBySlug: Record<string, string> = {}
+  const playersByTeam: Record<string, Array<{ id: string; position: string; captain: boolean }>> = { men: [], women: [], reserve: [], u18: [] }
   let offset = 0
   for (const key of Object.keys(squads)) {
     const spec = squads[key]
@@ -194,6 +213,7 @@ async function main() {
         data: { ...p, teamId: teams[key].id },
       })
       playersBySlug[`${key}-${p.number}`] = created.id
+      playersByTeam[key].push({ id: created.id, position: p.position, captain: p.captain })
       await prisma.playerCareerStep.createMany({
         data: [
           { playerId: created.id, season: '2023/2024', club: 'Centre de Formation AKWABA FC', note: 'Formation', order: 0 },
@@ -263,6 +283,7 @@ async function main() {
   const now = new Date()
   let matchdayCounter = 1
   const matchIdsByTeam: Record<string, string[]> = { men: [], women: [], reserve: [], u18: [] }
+  const playedMatchesByTeam: Record<string, Array<{ id: string; date: Date }>> = { men: [], women: [], reserve: [], u18: [] }
 
   for (const key of Object.keys(teamCompetition)) {
     const { comp, category } = teamCompetition[key]
@@ -287,6 +308,7 @@ async function main() {
         },
       })
       matchIdsByTeam[key].push(match.id)
+      playedMatchesByTeam[key].push({ id: match.id, date })
       if (i <= 2) {
         await prisma.matchEvent.createMany({
           data: [
@@ -316,6 +338,7 @@ async function main() {
         },
       })
       matchIdsByTeam[key].push(liveMatch.id)
+      playedMatchesByTeam[key].push({ id: liveMatch.id, date: liveMatch.date })
       await prisma.matchEvent.createMany({
         data: [
           { matchId: liveMatch.id, minute: 12, type: 'GOAL', side: 'HOME', player: 'Numéro 9', detail: 'Passe décisive n°10', order: 0 },
@@ -389,6 +412,100 @@ async function main() {
         competitionId: comp.id,
       })),
     })
+  }
+
+  // -------------------------------------------------------------------------
+  // Feuilles de match, progression et médias des joueurs
+  // -------------------------------------------------------------------------
+  console.log('Génération des feuilles de match et statistiques joueurs…')
+  const SAMPLE_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+
+  for (const key of Object.keys(playersByTeam)) {
+    const squad = playersByTeam[key]
+    const matches = playedMatchesByTeam[key]
+    if (squad.length === 0) continue
+
+    for (const [mIdx, match] of matches.entries()) {
+      // Convoque ~16 joueurs (rotation déterministe) : 11 titulaires + remplaçants.
+      const squadSize = Math.min(squad.length, 16)
+      const called = Array.from({ length: squadSize }, (_, i) => squad[(mIdx * 5 + i) % squad.length])
+      const appearanceRows = called.map((player, i) => {
+        const started = i < 11
+        const minutesPlayed = started ? 70 + ((mIdx + i) % 21) : 8 + ((mIdx + i) % 25)
+        const isAttacker = player.position === 'FWD' || player.position === 'MID'
+        const goals = isAttacker && (mIdx + i) % 5 === 0 ? 1 + ((mIdx + i) % 2) : 0
+        const assists = isAttacker && (mIdx + i) % 6 === 1 ? 1 : 0
+        const yellowCards = (mIdx + i) % 9 === 0 ? 1 : 0
+        const redCards = (mIdx + i) % 27 === 0 ? 1 : 0
+        return { matchId: match.id, playerId: player.id, started, minutesPlayed, goals, assists, yellowCards, redCards }
+      })
+      await prisma.matchAppearance.createMany({ data: appearanceRows })
+      await prisma.playerProgressEntry.createMany({
+        data: appearanceRows.map((a) => ({
+          playerId: a.playerId,
+          matchId: a.matchId,
+          type: 'MATCH',
+          date: match.date,
+          rating: Math.max(0, Math.min(10, 6 + a.goals * 1 + a.assists * 0.5 - a.redCards * 2 - a.yellowCards * 0.5 + (a.minutesPlayed >= 60 ? 0.3 : 0))),
+        })),
+      })
+    }
+
+    // Entraînements : 2 évaluations par joueur, réparties sur les dernières semaines.
+    await prisma.playerProgressEntry.createMany({
+      data: squad.flatMap((player, i) => [
+        {
+          playerId: player.id,
+          type: 'TRAINING',
+          date: new Date(now.getTime() - (10 + (i % 5)) * 86400000),
+          rating: Math.min(10, 6 + ((i * 3) % 4) * 0.5),
+          note: 'Séance technique — bon engagement.',
+        },
+        {
+          playerId: player.id,
+          type: 'TRAINING',
+          date: new Date(now.getTime() - (3 + (i % 4)) * 86400000),
+          rating: Math.min(10, 6.5 + ((i * 5) % 4) * 0.5),
+          note: 'Travail physique et tactique.',
+        },
+      ]),
+    })
+
+    // Médias : 3 photos + 1 vidéo par joueur ; vidéo highlight en fond pour le capitaine.
+    for (const [i, player] of squad.entries()) {
+      await prisma.playerMedia.createMany({
+        data: [
+          { playerId: player.id, type: 'PHOTO', url: poolImg(i * 3 + 1, 900), order: 0 },
+          { playerId: player.id, type: 'PHOTO', url: poolImg(i * 3 + 2, 900), order: 1 },
+          { playerId: player.id, type: 'PHOTO', url: poolImg(i * 3 + 3, 900), order: 2 },
+          { playerId: player.id, type: 'VIDEO', url: SAMPLE_VIDEO, caption: 'Temps forts — dernière sortie', order: 3 },
+        ],
+      })
+      if (player.captain) {
+        await prisma.player.update({ where: { id: player.id }, data: { highlightVideoUrl: SAMPLE_VIDEO } })
+      }
+    }
+
+    // Recalcule les totaux carrière depuis les feuilles de match — cohérent
+    // avec ce que fait l'action admin saveMatchSheetAction en production.
+    for (const player of squad) {
+      const agg = await prisma.matchAppearance.aggregate({
+        where: { playerId: player.id },
+        _sum: { minutesPlayed: true, goals: true, assists: true, yellowCards: true, redCards: true },
+        _count: { id: true },
+      })
+      await prisma.player.update({
+        where: { id: player.id },
+        data: {
+          appearances: agg._count.id,
+          goals: agg._sum.goals ?? 0,
+          assists: agg._sum.assists ?? 0,
+          minutes: agg._sum.minutesPlayed ?? 0,
+          yellowCards: agg._sum.yellowCards ?? 0,
+          redCards: agg._sum.redCards ?? 0,
+        },
+      })
+    }
   }
 
   // -------------------------------------------------------------------------

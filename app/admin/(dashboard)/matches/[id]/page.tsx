@@ -2,8 +2,8 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { AdminForm, type FormFieldDef } from '@/components/admin/admin-form'
 import { DeleteButton } from '@/components/admin/delete-button'
-import { updateMatchAction, addMatchEventAction, deleteMatchEventAction } from '@/lib/actions/admin-actions'
-import { TEAM_SLUGS, TEAM_LABELS, MATCH_STATUSES, MATCH_STATUS_LABELS, MATCH_EVENT_TYPES, MATCH_EVENT_ICONS, type TeamSlug, type MatchStatus, type MatchEventType } from '@/lib/constants'
+import { updateMatchAction, addMatchEventAction, deleteMatchEventAction, saveMatchSheetAction } from '@/lib/actions/admin-actions'
+import { TEAM_SLUGS, TEAM_LABELS, MATCH_STATUSES, MATCH_STATUS_LABELS, MATCH_EVENT_TYPES, MATCH_EVENT_ICONS, POSITION_LABELS, type TeamSlug, type MatchStatus, type MatchEventType, type Position } from '@/lib/constants'
 import { Plus } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -20,6 +20,12 @@ export default async function EditMatchPage({ params }: { params: Promise<{ id: 
     prisma.competition.findMany({ orderBy: { name: 'asc' } }),
   ])
   if (!match) notFound()
+
+  const [squad, appearances] = await Promise.all([
+    prisma.player.findMany({ where: { teamId: match.teamId }, orderBy: { number: 'asc' } }),
+    prisma.matchAppearance.findMany({ where: { matchId: id } }),
+  ])
+  const appearanceByPlayer = new Map(appearances.map((a) => [a.playerId, a]))
 
   const fields: FormFieldDef[] = [
     { name: 'teamSlug', label: 'Équipe', type: 'select', required: true, options: TEAM_SLUGS.map((t) => ({ value: t, label: TEAM_LABELS[t as TeamSlug] })) },
@@ -49,6 +55,78 @@ export default async function EditMatchPage({ params }: { params: Promise<{ id: 
           cancelHref="/admin/matches"
           defaultValues={{ ...match, teamSlug: match.team.slug, date: toLocalInput(match.date) }}
         />
+      </div>
+
+      <div>
+        <h2 className="mb-2 font-display text-xl font-bold uppercase text-foreground">Feuille de match</h2>
+        <p className="mb-5 text-xs text-muted-foreground">
+          Cochez les joueurs ayant participé, renseignez minutes / buts / passes / cartons. Les statistiques globales et
+          par compétition de chaque joueur (fiche joueur publique) sont recalculées automatiquement à l&apos;enregistrement.
+        </p>
+        <form action={saveMatchSheetAction.bind(null, id)}>
+          <div className="overflow-x-auto card-elevated">
+            <table className="w-full min-w-[760px] text-left text-sm">
+              <thead>
+                <tr className="border-b border-border bg-secondary text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <th className="px-3 py-3">Sélection</th>
+                  <th className="px-3 py-3">Joueur</th>
+                  <th className="px-3 py-3">Titulaire</th>
+                  <th className="px-3 py-3 text-right">Minutes</th>
+                  <th className="px-3 py-3 text-right">Buts</th>
+                  <th className="px-3 py-3 text-right">Passes D.</th>
+                  <th className="px-3 py-3 text-right">🟨</th>
+                  <th className="px-3 py-3 text-right">🟥</th>
+                </tr>
+              </thead>
+              <tbody>
+                {squad.map((player) => {
+                  const a = appearanceByPlayer.get(player.id)
+                  return (
+                    <tr key={player.id} className="border-b border-border last:border-b-0">
+                      <td className="px-3 py-2.5">
+                        <input type="checkbox" name={`selected_${player.id}`} defaultChecked={Boolean(a)} className="h-4 w-4" />
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <span className="font-bold">#{player.number}</span> {player.firstName} {player.lastName}
+                        <span className="ml-2 text-[10px] uppercase tracking-widest text-muted-foreground">
+                          {POSITION_LABELS[player.position as Position]}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <input type="checkbox" name={`started_${player.id}`} defaultChecked={a ? a.started : true} className="h-4 w-4" />
+                      </td>
+                      <td className="px-3 py-2.5 text-right">
+                        <input type="number" min={0} max={120} name={`minutes_${player.id}`} defaultValue={a?.minutesPlayed ?? 0} className="min-h-9 w-16 border border-border bg-background px-2 text-right text-sm" />
+                      </td>
+                      <td className="px-3 py-2.5 text-right">
+                        <input type="number" min={0} name={`goals_${player.id}`} defaultValue={a?.goals ?? 0} className="min-h-9 w-14 border border-border bg-background px-2 text-right text-sm" />
+                      </td>
+                      <td className="px-3 py-2.5 text-right">
+                        <input type="number" min={0} name={`assists_${player.id}`} defaultValue={a?.assists ?? 0} className="min-h-9 w-14 border border-border bg-background px-2 text-right text-sm" />
+                      </td>
+                      <td className="px-3 py-2.5 text-right">
+                        <input type="number" min={0} max={2} name={`yellow_${player.id}`} defaultValue={a?.yellowCards ?? 0} className="min-h-9 w-14 border border-border bg-background px-2 text-right text-sm" />
+                      </td>
+                      <td className="px-3 py-2.5 text-right">
+                        <input type="number" min={0} max={1} name={`red_${player.id}`} defaultValue={a?.redCards ?? 0} className="min-h-9 w-14 border border-border bg-background px-2 text-right text-sm" />
+                      </td>
+                    </tr>
+                  )
+                })}
+                {squad.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="px-3 py-6 text-center text-sm text-muted-foreground">
+                      Aucun joueur dans cet effectif.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <button type="submit" className="rounded-full mt-5 flex items-center gap-2 bg-primary px-6 py-3.5 text-[11px] font-bold uppercase tracking-widest text-primary-foreground">
+            Enregistrer la feuille de match
+          </button>
+        </form>
       </div>
 
       <div>

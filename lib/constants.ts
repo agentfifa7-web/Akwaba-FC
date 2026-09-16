@@ -49,6 +49,37 @@ export const MATCH_STATUS_LABELS: Record<MatchStatus, string> = {
   POSTPONED: 'Reporté',
 }
 
+export const PLAYER_MEDIA_TYPES = ['PHOTO', 'VIDEO'] as const
+export type PlayerMediaType = (typeof PLAYER_MEDIA_TYPES)[number]
+
+export const PROGRESS_ENTRY_TYPES = ['MATCH', 'TRAINING'] as const
+export type ProgressEntryType = (typeof PROGRESS_ENTRY_TYPES)[number]
+export const PROGRESS_ENTRY_TYPE_LABELS: Record<ProgressEntryType, string> = {
+  MATCH: 'Match',
+  TRAINING: 'Entraînement',
+}
+
+export const PLAYER_ATTRIBUTE_KEYS = ['pace', 'shooting', 'passing', 'dribbling', 'defending', 'physical'] as const
+export type PlayerAttributeKey = (typeof PLAYER_ATTRIBUTE_KEYS)[number]
+export const PLAYER_ATTRIBUTE_LABELS: Record<PlayerAttributeKey, string> = {
+  pace: 'Vitesse',
+  shooting: 'Tir',
+  passing: 'Passe',
+  dribbling: 'Dribble',
+  defending: 'Défense',
+  physical: 'Physique',
+}
+
+// Thème de couleur par poste — utilisé sur la fiche de présentation du
+// joueur (radar, courbe de progression, badges) pour apporter de la
+// couleur tout en restant lisible dans les deux thèmes clair/sombre.
+export const POSITION_THEME: Record<Position, { accent: string; soft: string; ring: string }> = {
+  GK: { accent: '#f5a524', soft: 'rgba(245,165,36,0.16)', ring: 'rgba(245,165,36,0.4)' },
+  DEF: { accent: '#3b82f6', soft: 'rgba(59,130,246,0.16)', ring: 'rgba(59,130,246,0.4)' },
+  MID: { accent: '#22c55e', soft: 'rgba(34,197,94,0.16)', ring: 'rgba(34,197,94,0.4)' },
+  FWD: { accent: '#ef4444', soft: 'rgba(239,68,68,0.16)', ring: 'rgba(239,68,68,0.4)' },
+}
+
 export const MATCH_EVENT_TYPES = ['GOAL', 'YELLOW', 'RED', 'SUB', 'OTHER'] as const
 export type MatchEventType = (typeof MATCH_EVENT_TYPES)[number]
 export const MATCH_EVENT_ICONS: Record<MatchEventType, string> = {

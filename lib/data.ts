@@ -23,7 +23,70 @@ export async function getSquad(slug: TeamSlug) {
 export function getPlayerBySlug(slug: string) {
   return prisma.player.findUnique({
     where: { slug },
-    include: { team: true, careerSteps: { orderBy: { order: 'asc' } } },
+    include: {
+      team: true,
+      careerSteps: { orderBy: { order: 'asc' } },
+      media: { orderBy: { order: 'asc' } },
+    },
+  })
+}
+
+// Statistiques d'un joueur ventilées par compétition, plus un total
+// "toutes compétitions" — calculées à la volée depuis la feuille de match
+// (MatchAppearance), donc toujours à jour sans étape de synchronisation.
+export async function getPlayerCompetitionStats(playerId: string) {
+  const appearances = await prisma.matchAppearance.findMany({
+    where: { playerId },
+    include: { match: { include: { competition: true } } },
+  })
+
+  type Row = {
+    competition: { id: string; name: string; season: string }
+    appearances: number
+    goals: number
+    assists: number
+    minutes: number
+    yellowCards: number
+    redCards: number
+  }
+
+  const byCompetition = new Map<string, Row>()
+  for (const a of appearances) {
+    const key = a.match.competitionId
+    const row =
+      byCompetition.get(key) ??
+      ({ competition: a.match.competition, appearances: 0, goals: 0, assists: 0, minutes: 0, yellowCards: 0, redCards: 0 } satisfies Row)
+    row.appearances += 1
+    row.goals += a.goals
+    row.assists += a.assists
+    row.minutes += a.minutesPlayed
+    row.yellowCards += a.yellowCards
+    row.redCards += a.redCards
+    byCompetition.set(key, row)
+  }
+
+  const rows = Array.from(byCompetition.values()).sort((a, b) => b.appearances - a.appearances)
+  const global = rows.reduce(
+    (acc, r) => ({
+      appearances: acc.appearances + r.appearances,
+      goals: acc.goals + r.goals,
+      assists: acc.assists + r.assists,
+      minutes: acc.minutes + r.minutes,
+      yellowCards: acc.yellowCards + r.yellowCards,
+      redCards: acc.redCards + r.redCards,
+    }),
+    { appearances: 0, goals: 0, assists: 0, minutes: 0, yellowCards: 0, redCards: 0 },
+  )
+
+  return { rows, global }
+}
+
+// Courbe de progression (matchs + entraînements), triée chronologiquement.
+export function getPlayerProgress(playerId: string) {
+  return prisma.playerProgressEntry.findMany({
+    where: { playerId },
+    orderBy: { date: 'asc' },
+    include: { match: { select: { opponent: true } } },
   })
 }
 
